@@ -4,7 +4,7 @@
 \alias{retrieve_sensor}
 \title{Retrieve data associated with a sensor from the Telraam API}
 \usage{
-retrieve_sensor(id_sensor, date1, date2)
+retrieve_sensor(id_sensor, date1, date2, key = NULL)
 }
 \arguments{
 \item{id_sensor}{Numeric. ID of the sensor}
@@ -12,6 +12,8 @@ retrieve_sensor(id_sensor, date1, date2)
 \item{date1}{Date. Start date "aaaa-mm-jj"}
 
 \item{date2}{Date. End date "aaaa-mm-jj"}
+
+\item{key}{Text. Key for the Telraam API}
 }
 \description{
 This function retrieves data associated with a sensor from the Telraam API. The data is retrieved for a specified time period between \code{date1} and \code{date2} (inclusive).
