@@ -1,0 +1,33 @@
+Package: telraamStats
+Title: Analysis of mobility data from Telraam API
+Version: 0.0.0.9000
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: What the package does (one paragraph).
+License: file LICENSE
+Imports:
+    cowplot,
+    CPAT,
+    dplyr,
+    ggplot2,
+    gridExtra,
+    httr,
+    jsonlite,
+    lubridate,
+    mgcv,
+    purrr,
+    readr,
+    rlang,
+    stringr,
+    synchrony,
+    tibble,
+    tidyr,
+    zoo
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
