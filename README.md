@@ -1,3 +1,7 @@
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/agistaterre/telraamStats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agistaterre/telraamStats/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
+
 # telraamStats
 
 The aim of this package is to grant the user tools for data visualisation and data analysis of mobility data for Telraam sensors. It reuses and expands on functionnalities from this [`application`](https://agistaterre.shinyapps.io/mov-around/).
