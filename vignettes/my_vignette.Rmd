@@ -23,7 +23,7 @@ library(dplyr)
 
 # Download data
 
-```{r}
+```{r, eval = FALSE}
 key <- readLines("../key.txt")
 
 df1 <- retrieve_sensor(id_sensor = 9000002156,
