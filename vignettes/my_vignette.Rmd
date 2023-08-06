@@ -14,7 +14,43 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Load R packages
+
 ```{r setup}
 library(telraamStats)
+library(dplyr)
+```
+
+# Download data
+
+```{r, eval = FALSE}
+key <- readLines("../key.txt")
+
+df1 <- retrieve_sensor(id_sensor = 9000002156,
+                       date1 = as.Date('2023-01-01'), 
+                       date2 = as.Date('2023-07-01'),
+                       key = key)
+
+df2 <- retrieve_sensor(id_sensor = 9000001906,
+                       date1 = as.Date('2023-01-01'), 
+                       date2 = as.Date('2023-07-01'),
+                       key = key)
+
+data <- rbind(df1, df2)
+```
+
+# Compare time periods
+
+## Difference between weekends and working days
+
+```{r}
+# data2 <- data %>% 
+#   filtering()
+#   
+#   
+#   mutate(week_day = lubridate::wday(date),
+#          weekend = week_day %in% c(1, 7))
+#   
+# test <- lm()
 ```
 
