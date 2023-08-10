@@ -17,9 +17,9 @@
 import_sensor_comp <- function(sensor_ids,sensor_comp_names){
   data <- data.frame()
   data <- map_dfr(sensor_comp_names, ~ {
-    file <- paste0('data/', .x, '.csv')
+    file <- paste0('data/', .x, '.RData')
     if (file.exists(file)) {
-      read.csv(file, header = TRUE, sep = ";", dec = ",")
+      load(file, header = TRUE, sep = ";", dec = ",")
     } else {
       NULL
     }

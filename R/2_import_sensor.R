@@ -28,10 +28,11 @@ import_sensor <- function(list_sensor,
   data <- data.frame()
   name_sensor <- sensor_names[sensor_ids%in%list_sensor]
   data <- map_dfr(name_sensor, ~ {
-    file <- as.data.frame(paste0('data/', .x, '.RData'))
+    file <- paste0('data/', .x, '.RData')
     if (file.exists(file)) {
       # we select the data that we don't consider null (arbitrary choice)
-      import <- load(file) %>% filter(.data$uptime > 0.5,
+      import <- load(file)
+      import <- import %>% filter(.data$uptime > 0.5,
                                            .data$heavy_lft + .data$car_lft + .data$pedestrian_lft + .data$bike_lft +
                                              .data$heavy_rgt + .data$car_rgt + .data$pedestrian_rgt + .data$bike_rgt >0)
       import$car_speed_hist_0to70plus <-  convert_string_to_list(import$car_speed_hist_0to70plus)
