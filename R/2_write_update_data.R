@@ -9,7 +9,7 @@
 #' @param sensor_ids list with the ids of all the studied sensors
 #'
 #' @importFrom lubridate ymd
-#' @importFrom readr read_csv2 write_csv2
+#'
 #' @export
 #'
 write_update_data <- function(id_sensor, date1, date2,
@@ -29,14 +29,14 @@ write_update_data <- function(id_sensor, date1, date2,
   data$car_speed_hist_0to70plus <- sapply(data$car_speed_hist_0to70plus, function(x) paste(x, collapse = ", "))
   data$car_speed_hist_0to120plus <- sapply(data$car_speed_hist_0to120plus, function(x) paste(x, collapse = ", "))
 
-  file_name <- paste0("data/",sensor_names[which(sensor_ids==id_sensor)],".csv")
+  file_name <- paste0("data/",sensor_names[which(sensor_ids==id_sensor)],".RData")
 
   if (!is.null(data)){
     if (file.exists(file_name)){
-      cleaning <- read_csv2(file_name)
+      cleaning <- load(file_name)
       data <- rbind(cleaning,data)
       data <- data[!duplicated(data$date),] # if some lines are repeated they are eliminated
     }
-    write_csv2(data, file = file_name)
+    save(data, file = file_name)
   }
 }

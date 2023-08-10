@@ -10,7 +10,6 @@
 #'
 #'
 #' @importFrom dplyr slice select mutate arrange filter
-#' @importFrom readr read_csv2 write_csv2
 #' @importFrom stringr str_sub
 #'
 #' @export
@@ -29,10 +28,10 @@ write_update_data_comp <- function(id_sensor, date1, date2,
   # retrieve file name
   sensor_name <- sensor_names[which(sensor_ids==id_sensor)]
   comp_name <- paste(str_sub(sensor_name,1,-4), "_comp", str_sub(sensor_name,-3,-1), sep = "")
-  file_name <- paste0("data/",comp_name,".csv")
+  file_name <- paste0("data/",comp_name,".RData")
 
   # Preparation of the dataset
-  data <- read_csv2(file_name)
+  data <- load(file_name)
 
   data_update <- data |> slice((nrow(data)-805):nrow(data)) |>
     select(-.data$imputation, -.data$period)
@@ -87,7 +86,7 @@ write_update_data_comp <- function(id_sensor, date1, date2,
       if (file.exists(file_name)){
         data_comp <- data_comp[!duplicated(data_comp$date),] # if some lines are repeated they are eliminated
       }
-      write_csv2(data_comp, file = file_name)
+      save(data_comp, file = file_name)
     }
   }
 }

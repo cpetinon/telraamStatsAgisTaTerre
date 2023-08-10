@@ -243,10 +243,7 @@ imp_na <- function(data, period = "open days"){
 }
 
 
-#' Mutate Data
-#'
-#' This function summarizes the data by calculating the mean values of different variables
-#' for each hour of the day.
+#' Add day and hour from date
 #'
 #' @param data A data frame containing the input data.
 #' @param date column date of data
@@ -256,6 +253,8 @@ imp_na <- function(data, period = "open days"){
 #'
 #' @importFrom dplyr mutate %>%
 #' @importFrom rlang :=
+#'
+#' @noRd
 #'
 mutate_date_time <- function(data, date, days, hours) {
 

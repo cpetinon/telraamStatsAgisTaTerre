@@ -52,5 +52,8 @@ data <- rbind(df1, df2)
 #          weekend = week_day %in% c(1, 7))
 #   
 # test <- lm()
+# date_range <- max(df$date)-min(df$date)
+# mobility <- "car"
+
 ```
 
