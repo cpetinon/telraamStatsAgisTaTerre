@@ -15,7 +15,7 @@
 #' @export
 #'
 #'
-retrieve_sensor <- function(id_sensor,date1,date2, key = NULL){
+retrieve_sensor <- function(id_sensor,date1,date2){
 
   result <- data.frame()
   date2 <- date2 + days(1) # so that date2 is included
