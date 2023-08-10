@@ -38,7 +38,8 @@ write_update_data_comp <- function(id_sensor, date1, date2,
 
   if (!file.exists(file_name)) {
     # If the file doesn't exist, create a new one and save the data
-    data_update <- retrieve_sensor(id_sensor, date1, date2)
+    data <- retrieve_sensor(id_sensor, date1, date2)
+    data_update <- data
     # conversion from a numeric vector to a character string of car_speed_hist_0to70plus and car_speed_hist_0to120plus
     data_update$car_speed_hist_0to70plus <- sapply(data_update$car_speed_hist_0to70plus, function(x) paste(x, collapse = ", "))
     data_update$car_speed_hist_0to120plus <- sapply(data_update$car_speed_hist_0to120plus, function(x) paste(x, collapse = ", "))
