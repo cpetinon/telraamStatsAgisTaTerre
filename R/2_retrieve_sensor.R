@@ -5,7 +5,6 @@
 #' @param id_sensor Numeric. ID of the sensor
 #' @param date1 Date. Start date "aaaa-mm-jj"
 #' @param date2 Date. End date "aaaa-mm-jj"
-#' @param key Text. Key for the Telraam API
 #'
 #'
 #' @importFrom lubridate ymd_hms days
