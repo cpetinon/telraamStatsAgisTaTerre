@@ -32,6 +32,7 @@ import_sensor <- function(list_sensor,
     if (file.exists(file)) {
       # we select the data that we don't consider null (arbitrary choice)
       import <- load(file)
+      import <- get(import)
       import <- import %>% filter(.data$uptime > 0.5,
                                            .data$heavy_lft + .data$car_lft + .data$pedestrian_lft + .data$bike_lft +
                                              .data$heavy_rgt + .data$car_rgt + .data$pedestrian_rgt + .data$bike_rgt >0)
