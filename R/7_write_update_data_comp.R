@@ -11,7 +11,7 @@
 #' @param public_holidays public holidays list, set by default on the french ones
 #'
 #'
-#' @importFrom dplyr slice select mutate arrange filter
+#' @importFrom dplyr slice select mutate arrange filter %>%
 #' @importFrom stringr str_sub
 #'
 #' @export
@@ -46,10 +46,10 @@ write_update_data_comp <- function(id_sensor, date1, date2,
   # Preparation of the dataset
   data <- get(load(file_name))
 
-  data_update <- data |> slice((nrow(data)-805):nrow(data)) |>
+  data_update <- data %>% slice((nrow(data)-805):nrow(data)) %>%
     select(-.data$imputation, -.data$period)
-  new_data <- retrieve_sensor(id_sensor,date1, date2) |>
-    filter(!is.na(date)) |>
+  new_data <- retrieve_sensor(id_sensor,date1, date2) %>%
+    filter(!is.na(date)) %>%
     mutate(date = as.character(date))
 
     # conversion from a numeric vector to a character string of car_speed_hist_0to70plus and car_speed_hist_0to120plus
@@ -60,35 +60,35 @@ write_update_data_comp <- function(id_sensor, date1, date2,
     data_update <- rbind(data_update, new_data)
   }
     # retrieve public holidays
-    date_pub_hol <- filter_public_holidays(data_update, "Seulement les jours feries") |> select(date)
+    date_pub_hol <- filter_public_holidays(data_update, "Seulement les jours feries") %>% select(date)
     date_pub_hol <- date_pub_hol[[1]]
 
     # retrieve vacations
-    date_hol <- filter_vacation(data_update, "Seulement les vacances") |> select(date)
+    date_hol <- filter_vacation(data_update, "Seulement les vacances") %>% select(date)
     date_hol <- date_hol[[1]]
     date_hol <- date_hol[!date_hol %in% date_pub_hol]
 
     # retrieve open days
-    date_od <- data_update |> filter(!date %in% date_pub_hol & !date %in% date_hol) |> select(date)
+    date_od <- data_update %>% filter(!date %in% date_pub_hol & !date %in% date_hol) %>% select(date)
     date_od <- date_od[[1]]
 
     # impute for public_holidays
     data_pub_hol <- imp_na(data_update, "public holidays")
-    data_pub_hol <- data_pub_hol |> filter(date %in% date_pub_hol) |> mutate(period = "public holidays")
+    data_pub_hol <- data_pub_hol %>% filter(date %in% date_pub_hol) %>% mutate(period = "public holidays")
 
     # impute for vacations
     data_hol <- imp_na(data_update, "holidays")
-    data_hol <- data_hol |> filter(date %in% date_hol) |> mutate(period = "holidays")
+    data_hol <- data_hol %>% filter(date %in% date_hol) %>% mutate(period = "holidays")
 
     # impute for open days
     data_od <- imp_na(data_update, "open days")
-    data_od <- data_od |> filter(date %in% date_od) |> mutate(period = "open days")
+    data_od <- data_od %>% filter(date %in% date_od) %>% mutate(period = "open days")
 
     # retrieve complete data for the update
-    data_comp <- rbind(data_pub_hol, data_hol, data_od) |> arrange(date)
+    data_comp <- rbind(data_pub_hol, data_hol, data_od) %>% arrange(date)
 
     # combine data (old and new)
-    data <- data |> slice(1:(nrow(data)-806))
+    data <- data %>% slice(1:(nrow(data)-806))
     data_comp <- rbind(data, data_comp)
 
     if (!is.null(new_data)){
