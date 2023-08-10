@@ -28,7 +28,7 @@ import_sensor <- function(list_sensor,
   data <- data.frame()
   name_sensor <- sensor_names[sensor_ids%in%list_sensor]
   data <- map_dfr(name_sensor, ~ {
-    file <- paste0('data/', .x, '.RData')
+    file <- as.data.frame(paste0('data/', .x, '.RData'))
     if (file.exists(file)) {
       # we select the data that we don't consider null (arbitrary choice)
       import <- load(file) %>% filter(.data$uptime > 0.5,
