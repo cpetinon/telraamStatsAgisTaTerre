@@ -33,7 +33,7 @@ write_update_data <- function(id_sensor, date1, date2,
 
   if (!is.null(data)){
     if (file.exists(file_name)){
-      cleaning <- load(file_name)
+      cleaning <- get(load(file_name))
       data <- rbind(cleaning,data)
       data <- data[!duplicated(data$date),] # if some lines are repeated they are eliminated
     }

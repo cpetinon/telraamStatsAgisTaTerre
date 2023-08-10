@@ -30,8 +30,15 @@ write_update_data_comp <- function(id_sensor, date1, date2,
   comp_name <- paste(str_sub(sensor_name,1,-4), "_comp", str_sub(sensor_name,-3,-1), sep = "")
   file_name <- paste0("data/",comp_name,".RData")
 
+  if (!file.exists(file_name)) {
+    # If the file doesn't exist, create a new one and save the data
+    data_update <- retrieve_sensor(id_sensor, date1, date2)
+    # conversion from a numeric vector to a character string of car_speed_hist_0to70plus and car_speed_hist_0to120plus
+    data_update$car_speed_hist_0to70plus <- sapply(data$car_speed_hist_0to70plus, function(x) paste(x, collapse = ", "))
+    data_update$car_speed_hist_0to120plus <- sapply(data$car_speed_hist_0to120plus, function(x) paste(x, collapse = ", "))
+  } else {
   # Preparation of the dataset
-  data <- load(file_name)
+  data <- get(load(file_name))
 
   data_update <- data |> slice((nrow(data)-805):nrow(data)) |>
     select(-.data$imputation, -.data$period)
@@ -39,17 +46,13 @@ write_update_data_comp <- function(id_sensor, date1, date2,
     filter(!is.na(date)) |>
     mutate(date = as.character(date))
 
-  if(nrow(new_data) == 0){
-    print("Mise a jour impossible")
-  }else{
-
     # conversion from a numeric vector to a character string of car_speed_hist_0to70plus and car_speed_hist_0to120plus
     new_data$car_speed_hist_0to70plus <- sapply(new_data$car_speed_hist_0to70plus, function(x) paste(x, collapse = ", "))
     new_data$car_speed_hist_0to120plus <- sapply(new_data$car_speed_hist_0to120plus, function(x) paste(x, collapse = ", "))
 
     # data on which we are going to impute
     data_update <- rbind(data_update, new_data)
-
+  }
     # retrieve public holidays
     date_pub_hol <- filter_public_holidays(data_update, "Seulement les jours feries") |> select(date)
     date_pub_hol <- date_pub_hol[[1]]
@@ -89,4 +92,3 @@ write_update_data_comp <- function(id_sensor, date1, date2,
       save(data_comp, file = file_name)
     }
   }
-}
