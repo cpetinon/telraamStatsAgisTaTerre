@@ -7,6 +7,8 @@
 #' @param date2 Date. End date "aaaa-mm-jj"
 #' @param sensor_names list with the name of all the studied sensors
 #' @param sensor_ids list with the ids of all the studied sensors
+#' @param vacations vacation periods, set by default on the french ones
+#' @param public_holidays public holidays list, set by default on the french ones
 #'
 #'
 #' @importFrom dplyr slice select mutate arrange filter
@@ -22,8 +24,12 @@ write_update_data_comp <- function(id_sensor, date1, date2,
                                    sensor_ids = c(9000002156, 9000001906, 9000001618,9000003090,9000002453,9000001844,
                                                   9000001877,9000002666,9000002181,9000002707,9000003703,
                                                   9000003746,9000003775,9000003736,9000004971,9000004130,
-                                                  9000004042,9000004697)
+                                                  9000004042,9000004697),
+                                   vacations = NULL,
+                                   public_holidays = NULL
                                     ){
+
+  set_global_vars(vacations, public_holidays)
 
   # retrieve file name
   sensor_name <- sensor_names[which(sensor_ids==id_sensor)]
