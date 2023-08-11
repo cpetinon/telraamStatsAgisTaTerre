@@ -3,8 +3,8 @@
 #' This function retrieves data associated with a sensor from the Telraam API. The data is retrieved for a specified time period between \code{date1} and \code{date2} (inclusive).
 #'
 #' @param id_sensor Numeric. ID of the sensor
-#' @param date1 Date. Start date "aaaa-mm-jj"
-#' @param date2 Date. End date "aaaa-mm-jj"
+#' @param date1 Date. Start date "aaaa-mm-jj", must be of the date type.
+#' @param date2 Date. End date "aaaa-mm-jj", must be of the date type.
 #' @param key the api key (set by the set_telraam_token function)
 #'
 #'

@@ -1,6 +1,11 @@
-#' Plot comparison between two datasets
+#' Comparaison of the number of users for each hour of the day there is data for over two different time periods.
 #'
-#' @param param_ref Dataset of reference
+#' @param param_ref List of your data and parameters you want to filter on and compare : list(data=,sensor=,direction=,mobility=,date_range=,vac=,wkd=,p_h=)
+#' Where: - data: dataframe containing your data
+#' - sensor: character, id of the sensor you want to study between quotes
+#' - direction: character, " " for all, "_rgt" for right (B to A), "_lft" for left (A to B)
+#' - mobility: character vector, c("car", "heavy", "pedestrian", "bike") are all the types you can choose from
+#' - date_range: date vector, c("starting_date", "ending_date")
 #' @param param_1 Dataset to compare
 #' @param color_graph Color palette for the plot
 #'

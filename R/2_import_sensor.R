@@ -1,10 +1,11 @@
-#' Import data associated with a list of sensors
+#' Imports data associated with a list of sensors
 #'
-#' This function imports data associated with a given list of sensor names.
+#' Imports data associated with a given list of sensor names from .RData files contained in a data directory.
+#' The main purpose of this function is to load the data saved with write update data.
 #'
 #' @param list_sensor A character vector specifying the names of sensors to import data for.
 #' @param sensor_names A character vector containing the name of each sensor that is displayed to the user
-#' @param sensor_ids A character vector containing the identifier name for each vector
+#' @param sensor_ids A numeric vector containing the identifier name for each vector
 #'
 #' @return A data.frame containing the imported data.
 #'

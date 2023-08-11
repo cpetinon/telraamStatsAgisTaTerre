@@ -86,7 +86,7 @@ filter_date <- function(data, date_range){
 #'@keywords internal
 #'
 filter_vacation <- function(data, vacation){
-  if (vacation=='Oui'){
+  if (vacation=='YES'){
     return(data)
   }
 
@@ -98,10 +98,10 @@ filter_vacation <- function(data, vacation){
   }
   matching_dates <- (matching_dates>0)
 
-  if(vacation=="Non"){
+  if(vacation=="NO"){
     return(data[!matching_dates,])
   }
-  if(vacation=="Seulement les vacances"){
+  if(vacation=="ONLY"){
     return(data[matching_dates,])
   }
 }
@@ -119,7 +119,7 @@ filter_vacation <- function(data, vacation){
 #' @keywords internal
 #'
 filter_public_holidays <- function(data, JF){
-  if (JF=='Oui'){
+  if (JF=='YES'){
     return(data)
   }
   d <- substr(as.character(data$date),1,10)
@@ -130,9 +130,9 @@ filter_public_holidays <- function(data, JF){
   }
   matching_dates <- (matching_dates>0)
 
-  if(JF=="Non"){
+  if(JF=="NO"){
     return(data[!matching_dates,])
-  } else if(JF=="Seulement les jours feries"){
+  } else if(JF=="ONLY"){
     return(data[matching_dates,])
   }
 }

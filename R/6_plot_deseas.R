@@ -26,7 +26,7 @@ plot_deseas <- function(data, sensor1,sensor2, hour_x, direction1, direction2, m
   trend_random <- decompose_2[['trend_random']]
   seas <- decompose_2[['seas']]
 
-  if (norm=="Oui"){
+  if (norm=="YES"){
     put_ticks <- labs(x = "Date", y= " ") +
       theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
   } else {

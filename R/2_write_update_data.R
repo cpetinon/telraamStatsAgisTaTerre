@@ -1,6 +1,6 @@
 #' Write or update the sensor data in the data folder
 #'
-#' This function writes or updates the sensor data in the data folder. It retrieves the data for the specified sensor between \code{date1} and \code{date2} (inclusive) using the \code{retrieve_sensor} function, and then converts certain columns to character strings before writing the data to a CSV file in the data folder.
+#' Writes or updates the sensor data in the data folder. It retrieves the data for the specified sensor between \code{date1} and \code{date2} (inclusive) using the \code{retrieve_sensor} function, and then converts certain columns to character strings before writing the data to a RData file in the data folder.
 #'
 #' @param id_sensor Numeric. ID of the sensor
 #' @param date1 Date. Start date "aaaa-mm-jj"

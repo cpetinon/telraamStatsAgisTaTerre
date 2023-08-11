@@ -52,7 +52,7 @@ decompose_2_fct <- function(data, sensor1,sensor2, hour_x, direction1, direction
 
   result <- data.frame(d1$trend,d2$trend,d1$seasonal,d2$seasonal,d1$random,d2$random,data1$total,data2$total)
 
-  if (norm=="Oui"){ # normalisation
+  if (norm=="YES"){ # normalisation
     result <- data.frame(apply(result,2,scale))
   }
 
