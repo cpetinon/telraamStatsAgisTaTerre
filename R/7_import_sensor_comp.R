@@ -33,7 +33,9 @@ import_sensor_comp <- function(sensor_ids,sensor_comp_names){
   data_sana <- data %>% filter(!is.na(car)) %>%
     mutate(car_speed_hist_0to70plus = convert_string_to_list(car_speed_hist_0to70plus),
            car_speed_hist_0to120plus = convert_string_to_list(car_speed_hist_0to120plus))
+  #data$date <- ymd_hms(data$date)
+  date <- data$date
   data <- rbind(data_na, data_sana) %>% arrange(date)
-  # data$date <- ymd_hms(data$date)
+
   return(data)
 }
