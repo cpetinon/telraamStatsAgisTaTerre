@@ -16,7 +16,7 @@
 #'
 import_sensor_comp <- function(sensor_ids,sensor_comp_names){
   data <- data.frame()
-  res <- map_dfr(sensor_comp_names, ~ {
+  data <- map_dfr(sensor_comp_names, ~ {
     file <- paste0('data/', .x, '.RData')
     if (file.exists(file)) {
       get(load(file))
