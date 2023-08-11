@@ -27,7 +27,7 @@ write_update_data_comp <- function(id_sensor, date1, date2,
                                                   9000004042,9000004697),
                                    vacations = NULL,
                                    public_holidays = NULL
-){
+                                  ){
 
   set_global_vars(vacations, public_holidays)
 
