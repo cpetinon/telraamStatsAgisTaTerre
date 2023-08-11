@@ -1,3 +1,5 @@
+#'  Check API State
+#'
 #'  Return the state of he Telraam API. Determine if updates can be made.
 #'
 #' @param key the api key (set by the set_telraam_token function)

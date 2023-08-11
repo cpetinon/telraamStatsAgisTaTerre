@@ -1,8 +1,7 @@
 #' Plots the number of vehicles in each direction for a selected sensor, aswell as the average speed and traffic volume
 #' by hour of the day.
 #'
-#' @param ... data and parameters to filter on, see the documentation for the filtering function
-#' @seealso [filtering()]
+#' @param ... data and parameters to filter on, see \link{filtering}
 #'
 #'
 #' @return A list containing the plotly figure and the aggregated traffic data by hour.

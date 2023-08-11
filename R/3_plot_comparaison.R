@@ -1,4 +1,6 @@
-#' Comparaison of the number of users for each hour of the day there is data for over two different time periods.
+#' Comparison time period
+#'
+#' Comparative visualization of the number of users for each hour of the day there is data for over two different time periods.
 #'
 #' @param param_ref List of your data and parameters you want to filter on and compare : list(data=,sensor=,direction=,mobility=,date_range=,vac=,wkd=,p_h=)
 #' Where: - data: dataframe containing your data

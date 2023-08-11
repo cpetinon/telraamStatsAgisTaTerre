@@ -54,7 +54,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">retrieve_sensor</span><span class="op">(</span><span class="va">id_sensor</span>, <span class="va">date1</span>, <span class="va">date2</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">retrieve_sensor</span><span class="op">(</span><span class="va">id_sensor</span>, <span class="va">date1</span>, <span class="va">date2</span>, key <span class="op">=</span> <span class="fu">get_telraam_token</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -64,11 +64,15 @@
 
 
 <dt>date1</dt>
-<dd><p>Date. Start date "aaaa-mm-jj"</p></dd>
+<dd><p>Date. Start date "aaaa-mm-jj", must be of the date type.</p></dd>
 
 
 <dt>date2</dt>
-<dd><p>Date. End date "aaaa-mm-jj"</p></dd>
+<dd><p>Date. End date "aaaa-mm-jj", must be of the date type.</p></dd>
+
+
+<dt>key</dt>
+<dd><p>the api key (set by the set_telraam_token function)</p></dd>
 
 </dl></div>
 

@@ -1,4 +1,4 @@
-#'  Number of cars and HGVs as a function of time
+#'  Number of cars and Heavies as a function of time
 #'
 #' @param data data.frame containing all the data for all your sensors
 #' @param sensor numeric, Id of the chosen sensor

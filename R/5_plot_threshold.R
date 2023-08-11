@@ -26,12 +26,12 @@ plot_threshold <- function(plot_speed, selected_speed, state_threshold, threshol
   # to place the threshold text
   mean_ord <- (100+min(plot_speed$data_plot$speed))/2
 
-  if (state_threshold == "automatique") {
+  if (state_threshold == "auto") {
     plot_speed$chart + geom_vline(xintercept = mean, color = "red", size = 1.5)+
       geom_text(aes(x = mean, y = mean_ord, label = round(mean)),
                 size = 5, angle = -90, vjust = -0.5, color = "red")
 
-  } else if (state_threshold == "manuel") {
+  } else if (state_threshold == "manual") {
     plot_speed$chart + geom_vline(xintercept = threshold, color = "red", size = 1.5) +
       geom_text(aes(x = threshold, y = mean_ord, label = threshold),
                 size = 5, angle = -90, vjust = -0.5, color = "red")
