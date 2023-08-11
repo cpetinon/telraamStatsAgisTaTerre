@@ -5,6 +5,7 @@
 #' @param id_sensor Numeric. ID of the sensor
 #' @param date1 Date. Start date "aaaa-mm-jj"
 #' @param date2 Date. End date "aaaa-mm-jj"
+#' @param key the api key (set by the set_telraam_token function)
 #'
 #'
 #' @importFrom lubridate ymd_hms days
@@ -14,7 +15,7 @@
 #' @export
 #'
 #'
-retrieve_sensor <- function(id_sensor,date1,date2){
+retrieve_sensor <- function(id_sensor,date1,date2, key = get_telraam_token()){
 
   result <- data.frame()
   date2 <- date2 + days(1) # so that date2 is included
