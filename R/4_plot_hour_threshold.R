@@ -1,9 +1,8 @@
-#' Plot Eng React Function
-#'
-#' This function plots the traffic data for a selected sensor, including the average speed and traffic volume
+#' Plots the number of vehicles in each direction for a selected sensor, aswell as the average speed and traffic volume
 #' by hour of the day.
 #'
-#' @param ... data and parameters to filter
+#' @param ... data and parameters to filter on, see the documentation for the filtering function
+#' @seealso [filtering()]
 #'
 #'
 #' @return A list containing the plotly figure and the aggregated traffic data by hour.

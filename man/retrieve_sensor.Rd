@@ -9,9 +9,9 @@ retrieve_sensor(id_sensor, date1, date2, key = get_telraam_token())
 \arguments{
 \item{id_sensor}{Numeric. ID of the sensor}
 
-\item{date1}{Date. Start date "aaaa-mm-jj"}
+\item{date1}{Date. Start date "aaaa-mm-jj", must be of the date type.}
 
-\item{date2}{Date. End date "aaaa-mm-jj"}
+\item{date2}{Date. End date "aaaa-mm-jj", must be of the date type.}
 
 \item{key}{the api key (set by the set_telraam_token function)}
 }

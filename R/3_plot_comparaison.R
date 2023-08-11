@@ -6,7 +6,10 @@
 #' - direction: character, " " for all, "_rgt" for right (B to A), "_lft" for left (A to B)
 #' - mobility: character vector, c("car", "heavy", "pedestrian", "bike") are all the types you can choose from
 #' - date_range: date vector, c("starting_date", "ending_date")
-#' @param param_1 Dataset to compare
+#' - vac: character, "YES" to keep, "NO" to filter out, or "ONLY" to only take vacation in the database
+#' - wkd: character vector, c("1", "2", "3", "4", "5", "6", "7"), where "1" stands for Monday and "7" for Sunday. Use options(lubridate.week.start = 1) for this function to perform correctly.
+#' - p_h: character, "YES" to keep, "NO" to filter out, or "ONLY" to only take public holidays in the database
+#' @param param_1 List, same as param_ref
 #' @param color_graph Color palette for the plot
 #'
 #'

@@ -2,17 +2,21 @@
 % Please edit documentation in R/4_plot_hour_threshold.R
 \name{plot_hour_threshold}
 \alias{plot_hour_threshold}
-\title{Plot Eng React Function}
+\title{Plots the number of vehicles in each direction for a selected sensor, aswell as the average speed and traffic volume
+by hour of the day.}
 \usage{
 plot_hour_threshold(...)
 }
 \arguments{
-\item{...}{data and parameters to filter}
+\item{...}{data and parameters to filter on, see the documentation for the filtering function}
 }
 \value{
 A list containing the plotly figure and the aggregated traffic data by hour.
 }
 \description{
-This function plots the traffic data for a selected sensor, including the average speed and traffic volume
+Plots the number of vehicles in each direction for a selected sensor, aswell as the average speed and traffic volume
 by hour of the day.
+}
+\seealso{
+\code{\link[=filtering]{filtering()}}
 }

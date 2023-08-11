@@ -7,14 +7,14 @@
 simple_plot(data, sensor, date_range)
 }
 \arguments{
-\item{data}{data.frame. See importation function}
+\item{data}{data.frame containing all the data for all your sensors}
 
-\item{sensor}{character. Name of the chosen sensor}
+\item{sensor}{numeric, Id of the chosen sensor}
 
 \item{date_range}{Date vector. example: c('2021-01-01','2022-01-01')}
 }
 \value{
-Simple chart
+graph showing the evolution of the number of cars and heavies over the selected date range for the chosen sensor.
 }
 \description{
 Number of cars and HGVs as a function of time
