@@ -2,12 +2,12 @@
 % Please edit documentation in R/3_plot_comparaison.R
 \name{plot_comparaison}
 \alias{plot_comparaison}
-\title{Comparaison of the number of users for each hour of the day there is data for over two different time periods.}
+\title{Comparison time period}
 \usage{
 plot_comparaison(param_ref, param_1, color_graph)
 }
 \arguments{
-\item{param_ref}{List of your data and parameters you want to filter on and compare : list(data=,sensor=,direction=,mobility=,date_range=,vac=,wkd=,p_h=)
+\item{param_ref}{List of your data and parameters you want to filter on and compare, \link{filtering} : list(data=,sensor=,direction=,mobility=,date_range=,vac=,wkd=,p_h=)
 Where: - data: dataframe containing your data
 \itemize{
 \item sensor: character, id of the sensor you want to study between quotes
@@ -27,5 +27,5 @@ Where: - data: dataframe containing your data
 A ggplot object representing the comparison plot
 }
 \description{
-Comparaison of the number of users for each hour of the day there is data for over two different time periods.
+Comparative visualization of the number of users for each hour of the day there is data for over two different time periods.
 }

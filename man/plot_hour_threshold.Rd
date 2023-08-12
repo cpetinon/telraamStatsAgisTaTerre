@@ -8,7 +8,7 @@ by hour of the day.}
 plot_hour_threshold(...)
 }
 \arguments{
-\item{...}{data and parameters to filter on, see the documentation for the filtering function}
+\item{...}{data and parameters to filter on, see \link{filtering}}
 }
 \value{
 A list containing the plotly figure and the aggregated traffic data by hour.
@@ -16,7 +16,4 @@ A list containing the plotly figure and the aggregated traffic data by hour.
 \description{
 Plots the number of vehicles in each direction for a selected sensor, aswell as the average speed and traffic volume
 by hour of the day.
-}
-\seealso{
-\code{\link[=filtering]{filtering()}}
 }

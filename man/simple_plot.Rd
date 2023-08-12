@@ -2,7 +2,7 @@
 % Please edit documentation in R/2_simple_plot.R
 \name{simple_plot}
 \alias{simple_plot}
-\title{Number of cars and HGVs as a function of time}
+\title{Number of cars and Heavies as a function of time}
 \usage{
 simple_plot(data, sensor, date_range)
 }
@@ -17,5 +17,5 @@ simple_plot(data, sensor, date_range)
 graph showing the evolution of the number of cars and heavies over the selected date range for the chosen sensor.
 }
 \description{
-Number of cars and HGVs as a function of time
+Number of cars and Heavies as a function of time
 }

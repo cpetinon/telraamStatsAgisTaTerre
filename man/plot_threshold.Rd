@@ -4,16 +4,16 @@
 \alias{plot_threshold}
 \title{Plot Threshold on Speed Chart}
 \usage{
-plot_threshold(plot_speed, selected_speed, state_threshold, threshold)
+plot_threshold(plot_speed, selected_speed, state_threshold, threshold = NULL)
 }
 \arguments{
-\item{plot_speed}{A data frame containing the speed data and chart details.}
+\item{plot_speed}{List, what the \link{plot_speed} function returns.}
 
-\item{selected_speed}{Character indicating the selected speed threshold.}
+\item{selected_speed}{Character indicating the selected speed threshold (c("ALL",MORE THAN 40KM/H", "MORE THAN 30KM/H", "MORE THAN 20KM/H", "MORE THAN 10KM/H")).}
 
-\item{state_threshold}{Character indicating the state of the threshold (automatique or manuel).}
+\item{state_threshold}{Character indicating the state of the threshold ("auto" or "manual").}
 
-\item{threshold}{Numeric value representing the manual threshold if state_threshold is "manuel".}
+\item{threshold}{Numeric value representing the manual threshold if state_threshold is "manual".}
 }
 \value{
 A ggplot2 chart with the speed plot and threshold line.

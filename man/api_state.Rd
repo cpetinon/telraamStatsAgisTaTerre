@@ -2,7 +2,7 @@
 % Please edit documentation in R/2_api_state.R
 \name{api_state}
 \alias{api_state}
-\title{Return the state of he Telraam API. Determine if updates can be made.}
+\title{Check API State}
 \usage{
 api_state(key = get_telraam_token())
 }

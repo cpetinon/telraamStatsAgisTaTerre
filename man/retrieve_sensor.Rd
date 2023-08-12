@@ -2,7 +2,7 @@
 % Please edit documentation in R/2_retrieve_sensor.R
 \name{retrieve_sensor}
 \alias{retrieve_sensor}
-\title{Retrieve data associated with a sensor from the Telraam API}
+\title{Retrieves data associated with a sensor from the Telraam API}
 \usage{
 retrieve_sensor(id_sensor, date1, date2, key = get_telraam_token())
 }
@@ -16,5 +16,5 @@ retrieve_sensor(id_sensor, date1, date2, key = get_telraam_token())
 \item{key}{the api key (set by the set_telraam_token function)}
 }
 \description{
-This function retrieves data associated with a sensor from the Telraam API. The data is retrieved for a specified time period between \code{date1} and \code{date2} (inclusive).
+Retrieves data associated with a sensor from the Telraam API. The data is retrieved for a specified time period between \code{date1} and \code{date2} (inclusive).
 }

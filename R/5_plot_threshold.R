@@ -1,6 +1,6 @@
 #' Plot Threshold on Speed Chart
 #'
-#' @param plot_speed A data frame containing the speed data and chart details.
+#' @param plot_speed List, what the \link{plot_speed} function returns.
 #' @param selected_speed Character indicating the selected speed threshold (c("ALL",MORE THAN 40KM/H", "MORE THAN 30KM/H", "MORE THAN 20KM/H", "MORE THAN 10KM/H")).
 #' @param state_threshold Character indicating the state of the threshold ("auto" or "manual").
 #' @param threshold Numeric value representing the manual threshold if state_threshold is "manual".
