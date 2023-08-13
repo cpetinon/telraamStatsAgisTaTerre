@@ -1,10 +1,10 @@
-#'  Number of cars and HGVs as a function of time
+#'  Number of cars and Heavies as a function of time
 #'
-#' @param data data.frame. See importation function
-#' @param sensor character. Name of the chosen sensor
+#' @param data data.frame containing all the data for all your sensors
+#' @param sensor numeric, Id of the chosen sensor
 #' @param date_range Date vector. example: c('2021-01-01','2022-01-01')
 #'
-#' @return Simple chart
+#' @return graph showing the evolution of the number of cars and heavies over the selected date range for the chosen sensor.
 #' @export
 #'
 simple_plot <- function(data, sensor, date_range){

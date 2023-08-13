@@ -86,7 +86,7 @@ filter_date <- function(data, date_range){
 #'@keywords internal
 #'
 filter_vacation <- function(data, vacation){
-  if (vacation=='Oui'){
+  if (vacation=='YES'){
     return(data)
   }
 
@@ -98,10 +98,10 @@ filter_vacation <- function(data, vacation){
   }
   matching_dates <- (matching_dates>0)
 
-  if(vacation=="Non"){
+  if(vacation=="NO"){
     return(data[!matching_dates,])
   }
-  if(vacation=="Seulement les vacances"){
+  if(vacation=="ONLY"){
     return(data[matching_dates,])
   }
 }
@@ -119,7 +119,7 @@ filter_vacation <- function(data, vacation){
 #' @keywords internal
 #'
 filter_public_holidays <- function(data, JF){
-  if (JF=='Oui'){
+  if (JF=='YES'){
     return(data)
   }
   d <- substr(as.character(data$date),1,10)
@@ -130,9 +130,9 @@ filter_public_holidays <- function(data, JF){
   }
   matching_dates <- (matching_dates>0)
 
-  if(JF=="Non"){
+  if(JF=="NO"){
     return(data[!matching_dates,])
-  } else if(JF=="Seulement les jours feries"){
+  } else if(JF=="ONLY"){
     return(data[matching_dates,])
   }
 }
@@ -141,14 +141,14 @@ filter_public_holidays <- function(data, JF){
 #' Filter by selected criteria.
 #' Not all criteria need to be filled in. Unfilled criteria are set by default so that no filtering is performed.
 #'
-#' @param data Raw data. See the "importation" function in the '2-import.R' file
-#' @param sensor character. Name of desired sensor
+#' @param data dat.frame. See the "importation" function in the '2-import.R' file
+#' @param sensor character. Id of desired sensor between quotations
 #' @param direction character. Direction of the street: " " or "_lft" or "_rgt"
 #' @param mobility character. Type of mobility: c("car","heavy","pedestrian","bike")
-#' @param date_range character. Date or character. c("aaaa-mm-jj","aaaa-mm-jj")
-#' @param vac character. With, without, or only with vacation: "Oui" or "Non" or "Seulement les vacances"
-#' @param p_h character. With, without, or only with public holiday: "Oui" or "Non" or "Seulement les jours feries"
-#' @param wkd character. Selected days of the week: c("1","2","3","4","5","6","7") here all days are selected
+#' @param date_range Date vector, c("aaaa-mm-jj","aaaa-mm-jj")
+#' @param vac character. With, without, or only with vacation: "YES" or "NO" or "ONLY"
+#' @param p_h character. With, without, or only with public holiday: "YES" or "NO" or "ONLY"
+#' @param wkd character vector. Selected days of the week: c("1","2","3","4","5","6","7") starting with one for Monday. Make sure to use options(lubridate.week.start = 1) for this function to perform correctly.
 #' @param vacations vacation periods, set by default on the french ones
 #' @param public_holidays public holidays period, set by default on the french ones
 #'

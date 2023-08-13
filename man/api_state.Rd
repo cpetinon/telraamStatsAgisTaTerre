@@ -2,12 +2,12 @@
 % Please edit documentation in R/2_api_state.R
 \name{api_state}
 \alias{api_state}
-\title{Return the state of he Telraam API. Determine if updates can be made.}
+\title{Check API State}
 \usage{
-api_state(key)
+api_state(key = get_telraam_token())
 }
 \arguments{
-\item{key}{file containing an API key ("key.txt")}
+\item{key}{the api key (set by the set_telraam_token function)}
 }
 \value{
 TRUE if the API responds well, FALSE otherwise

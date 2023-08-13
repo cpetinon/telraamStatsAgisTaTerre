@@ -1,11 +1,11 @@
-#' Retrieve data associated with a sensor from the Telraam API
+#' Retrieves data associated with a sensor from the Telraam API
 #'
-#' This function retrieves data associated with a sensor from the Telraam API. The data is retrieved for a specified time period between \code{date1} and \code{date2} (inclusive).
+#' Retrieves data associated with a sensor from the Telraam API. The data is retrieved for a specified time period between \code{date1} and \code{date2} (inclusive).
 #'
 #' @param id_sensor Numeric. ID of the sensor
-#' @param date1 Date. Start date "aaaa-mm-jj"
-#' @param date2 Date. End date "aaaa-mm-jj"
-#' @param key Text. Key for the Telraam API
+#' @param date1 Date. Start date "aaaa-mm-jj", must be of the date type.
+#' @param date2 Date. End date "aaaa-mm-jj", must be of the date type.
+#' @param key the api key (set by the set_telraam_token function)
 #'
 #'
 #' @importFrom lubridate ymd_hms days
@@ -15,7 +15,7 @@
 #' @export
 #'
 #'
-retrieve_sensor <- function(id_sensor,date1,date2, key = NULL){
+retrieve_sensor <- function(id_sensor,date1,date2, key = get_telraam_token()){
 
   result <- data.frame()
   date2 <- date2 + days(1) # so that date2 is included

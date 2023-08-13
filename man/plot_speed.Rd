@@ -2,16 +2,16 @@
 % Please edit documentation in R/5_plot_speed.R
 \name{plot_speed}
 \alias{plot_speed}
-\title{Stock Function}
+\title{Visualize speed proportion evolution with trafic}
 \usage{
 plot_speed(...)
 }
 \arguments{
-\item{...}{Arguments for filtering.}
+\item{...}{data and parameters to filter on, see \link{filtering}}
 }
 \value{
-A list containing the processed data and other results
+A list containing the curves, the result of the Darling-Erdös test performed on smoothed curves, and the processed data used for the curves
 }
 \description{
-Description of the function.
+Graphical representation (raw and smoothed curves) of the proportion of vehicles above 10, 20, 30 and 40 km/h per vehicles/hour
 }

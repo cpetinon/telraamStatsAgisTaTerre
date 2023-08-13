@@ -1,7 +1,17 @@
-#' Plot comparison between two datasets
+#' Comparison time period
 #'
-#' @param param_ref Dataset of reference
-#' @param param_1 Dataset to compare
+#' Comparative visualization of the number of users for each hour of the day there is data for over two different time periods.
+#'
+#' @param param_ref List of your data and parameters you want to filter on and compare, \link{filtering} : list(data=,sensor=,direction=,mobility=,date_range=,vac=,wkd=,p_h=)
+#' Where: - data: dataframe containing your data
+#' - sensor: character, id of the sensor you want to study between quotes
+#' - direction: character, " " for all, "_rgt" for right (B to A), "_lft" for left (A to B)
+#' - mobility: character vector, c("car", "heavy", "pedestrian", "bike") are all the types you can choose from
+#' - date_range: date vector, c("starting_date", "ending_date")
+#' - vac: character, "YES" to keep, "NO" to filter out, or "ONLY" to only take vacation in the database
+#' - wkd: character vector, c("1", "2", "3", "4", "5", "6", "7"), where "1" stands for Monday and "7" for Sunday. Use options(lubridate.week.start = 1) for this function to perform correctly.
+#' - p_h: character, "YES" to keep, "NO" to filter out, or "ONLY" to only take public holidays in the database
+#' @param param_1 List, same as param_ref
 #' @param color_graph Color palette for the plot
 #'
 #'

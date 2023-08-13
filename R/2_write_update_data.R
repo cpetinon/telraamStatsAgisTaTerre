@@ -1,6 +1,6 @@
 #' Write or update the sensor data in the data folder
 #'
-#' This function writes or updates the sensor data in the data folder. It retrieves the data for the specified sensor between \code{date1} and \code{date2} (inclusive) using the \code{retrieve_sensor} function, and then converts certain columns to character strings before writing the data to a CSV file in the data folder.
+#' Writes or updates the sensor data in the data folder. It retrieves the data for the specified sensor between \code{date1} and \code{date2} (inclusive) using the \code{retrieve_sensor} function, and then converts certain columns to character strings before writing the data to a RData file in the data folder.
 #'
 #' @param id_sensor Numeric. ID of the sensor
 #' @param date1 Date. Start date "aaaa-mm-jj"
@@ -9,7 +9,7 @@
 #' @param sensor_ids list with the ids of all the studied sensors
 #'
 #' @importFrom lubridate ymd
-#' @importFrom readr read_csv2 write_csv2
+#'
 #' @export
 #'
 write_update_data <- function(id_sensor, date1, date2,
@@ -29,14 +29,14 @@ write_update_data <- function(id_sensor, date1, date2,
   data$car_speed_hist_0to70plus <- sapply(data$car_speed_hist_0to70plus, function(x) paste(x, collapse = ", "))
   data$car_speed_hist_0to120plus <- sapply(data$car_speed_hist_0to120plus, function(x) paste(x, collapse = ", "))
 
-  file_name <- paste0("data/",sensor_names[which(sensor_ids==id_sensor)],".csv")
+  file_name <- paste0("data/",sensor_names[which(sensor_ids==id_sensor)],".RData")
 
   if (!is.null(data)){
     if (file.exists(file_name)){
-      cleaning <- read_csv2(file_name)
+      cleaning <- get(load(file_name))
       data <- rbind(cleaning,data)
       data <- data[!duplicated(data$date),] # if some lines are repeated they are eliminated
     }
-    write_csv2(data, file = file_name)
+    save(data, file = file_name)
   }
 }

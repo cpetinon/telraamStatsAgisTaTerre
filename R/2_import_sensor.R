@@ -1,15 +1,15 @@
-#' Import data associated with a list of sensors
+#' Imports data associated with a list of sensors
 #'
-#' This function imports data associated with a given list of sensor names.
+#' Imports data associated with a given list of sensor names from .RData files contained in a data directory.
+#' The main purpose of this function is to load the data saved with write update data.
 #'
 #' @param list_sensor A character vector specifying the names of sensors to import data for.
 #' @param sensor_names A character vector containing the name of each sensor that is displayed to the user
-#' @param sensor_ids A character vector containing the identifier name for each vector
+#' @param sensor_ids A numeric vector containing the identifier name for each vector
 #'
 #' @return A data.frame containing the imported data.
 #'
 #' @importFrom purrr map_dfr
-#' @importFrom readr read_csv2
 #' @importFrom lubridate ymd_hms
 #'
 #'
@@ -29,10 +29,12 @@ import_sensor <- function(list_sensor,
   data <- data.frame()
   name_sensor <- sensor_names[sensor_ids%in%list_sensor]
   data <- map_dfr(name_sensor, ~ {
-    file <- paste0('data/', .x, '.csv')
+    file <- paste0('data/', .x, '.RData')
     if (file.exists(file)) {
       # we select the data that we don't consider null (arbitrary choice)
-      import <- read_csv2(file) %>% filter(.data$uptime > 0.5,
+      import <- load(file)
+      import <- get(import)
+      import <- import %>% filter(.data$uptime > 0.5,
                                            .data$heavy_lft + .data$car_lft + .data$pedestrian_lft + .data$bike_lft +
                                              .data$heavy_rgt + .data$car_rgt + .data$pedestrian_rgt + .data$bike_rgt >0)
       import$car_speed_hist_0to70plus <-  convert_string_to_list(import$car_speed_hist_0to70plus)

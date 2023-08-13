@@ -2,7 +2,7 @@
 % Please edit documentation in R/2_import_sensor.R
 \name{import_sensor}
 \alias{import_sensor}
-\title{Import data associated with a list of sensors}
+\title{Imports data associated with a list of sensors}
 \usage{
 import_sensor(
   list_sensor,
@@ -21,11 +21,12 @@ import_sensor(
 
 \item{sensor_names}{A character vector containing the name of each sensor that is displayed to the user}
 
-\item{sensor_ids}{A character vector containing the identifier name for each vector}
+\item{sensor_ids}{A numeric vector containing the identifier name for each vector}
 }
 \value{
 A data.frame containing the imported data.
 }
 \description{
-This function imports data associated with a given list of sensor names.
+Imports data associated with a given list of sensor names from .RData files contained in a data directory.
+The main purpose of this function is to load the data saved with write update data.
 }
