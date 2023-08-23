@@ -63,11 +63,11 @@ write_update_data_comp <- function(id_sensor, date1, date2,
     data <- data %>% slice(1:(nrow(data)-806))
   }
   # retrieve public holidays
-  date_pub_hol <- filter_public_holidays(data_update, "Seulement les jours feries") %>% select(date)
+  date_pub_hol <- filter_public_holidays(data_update, "ONLY") %>% select(date)
   date_pub_hol <- date_pub_hol[[1]]
 
   # retrieve vacations
-  date_hol <- filter_vacation(data_update, "Seulement les vacances") %>% select(date)
+  date_hol <- filter_vacation(data_update, "ONLY") %>% select(date)
   date_hol <- date_hol[[1]]
   date_hol <- date_hol[!date_hol %in% date_pub_hol]
 
