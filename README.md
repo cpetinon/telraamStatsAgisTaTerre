@@ -40,5 +40,5 @@ install.packages(c("cowplot",
 If you want to install this package, you can use :
 
 ``` r
-devtools::install_github(" https://github.com/UCaromel/movaround_pkg")
+devtools::install_github(" https://github.com/agistaterre/telraamStats")
 ```
