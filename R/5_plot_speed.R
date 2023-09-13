@@ -57,7 +57,7 @@ plot_speed <- function(...){
 
   # the final data table to be drawn
   data_plot <- data.frame("count" = rep(count_car, 4),
-                          "speed" = c(speed10, speed20, speed30, speed40),
+                          "percentage" = c(speed10, speed20, speed30, speed40),
                           "legend" = c(rep(label[1], k), rep(label[2], k), rep(label[3], k), rep(label[4], k)))
 
   # Preparing x axis indexing
