@@ -35,9 +35,13 @@ filtering(
 
 \item{wkd}{character vector. Selected days of the week: c("1","2","3","4","5","6","7") starting with one for Monday. Make sure to use options(lubridate.week.start = 1) for this function to perform correctly.}
 
-\item{vacations}{vacation periods, set by default on the french ones}
+\item{vacations}{data.frame, containing 3 columns : desctiption, start_date and end_date
+\itemize{
+\item the description column contains character vectors with the name of every vacations you are studying
+\item starting_date and ending_date are Date-Time vectors(POSIXct) in the format "year-month-day hour:minute:second", obtainable for example using ymd_hms from the lubridate package
+}}
 
-\item{public_holidays}{public holidays period, set by default on the french ones}
+\item{public_holidays}{date vector, containing the public holidays dates in a "Year-month-day" format.}
 }
 \value{
 the filtered data

@@ -36,13 +36,13 @@ imp_na <- function(data, period = "open days"){
 
   # collect period (days)
   ## public holidays
-  date_pub_hol <- filter_public_holidays(data, "Seulement les jours feries") %>%
+  date_pub_hol <- filter_public_holidays(data, "ONLY") %>%
     select(days) %>%
     distinct()
   date_pub_hol <- date_pub_hol[[1]]
 
   ## holidays
-  date_hol <- filter_vacation(data, "Seulement les vacances") %>%
+  date_hol <- filter_vacation(data, "ONLY") %>%
     select(days)%>%
     distinct()
   date_hol <- date_hol[[1]]

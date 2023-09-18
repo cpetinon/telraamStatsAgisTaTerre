@@ -270,14 +270,14 @@ prep_view_data <- function(data,
 
   }else if(pub_holidays == "NO"){
 
-    data <- filter_public_holidays(data, "Non")
+    data <- filter_public_holidays(data, "NO")
 
     days <- days[days %in% str_sub(data$date, 1, 10)] %>%
       as.character()
 
   }else if(pub_holidays == "ONLY"){
 
-    data <- filter_public_holidays(data, "Seulement les jours feries")
+    data <- filter_public_holidays(data, "ONLY")
 
     days <- days[days %in% str_sub(data$date, 1, 10)] %>%
       as.character()
@@ -290,13 +290,13 @@ prep_view_data <- function(data,
 
   }else if(holidays == "NO"){
 
-    data <- filter_vacation(data, "Non")
+    data <- filter_vacation(data, "NO")
     days <- days[days %in% str_sub(data$date, 1, 10)] %>%
       as.character()
 
   }else if(holidays == "ONLY"){
 
-    data <- filter_vacation(data, "Seulement les vacances")
+    data <- filter_vacation(data, "ONLY")
 
     days <- days[days %in% str_sub(data$date, 1, 10)] %>%
       as.character()

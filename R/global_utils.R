@@ -149,11 +149,16 @@ filter_public_holidays <- function(data, JF){
 #' @param vac character. With, without, or only with vacation: "YES" or "NO" or "ONLY"
 #' @param p_h character. With, without, or only with public holiday: "YES" or "NO" or "ONLY"
 #' @param wkd character vector. Selected days of the week: c("1","2","3","4","5","6","7") starting with one for Monday. Make sure to use options(lubridate.week.start = 1) for this function to perform correctly.
-#' @param vacations vacation periods, set by default on the french ones
-#' @param public_holidays public holidays period, set by default on the french ones
+#' @param vacations data.frame, containing 3 columns : desctiption, start_date and end_date
+#' - the description column contains character vectors with the name of every vacations you are studying
+#' - starting_date and ending_date are Date-Time vectors(POSIXct) in the format "year-month-day hour:minute:second", obtainable for example using ymd_hms from the lubridate package
+#' @param public_holidays date vector, containing the public holidays dates in a "Year-month-day" format.
+#'
 #'
 #' @return the filtered data
+#'
 #' @export
+#'
 #' @importFrom dplyr filter %>%
 #' @importFrom lubridate wday
 #' @importFrom purrr is_empty

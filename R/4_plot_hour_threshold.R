@@ -45,6 +45,8 @@ plot_hour_threshold <- function(...) {
   mean_speed <- mean(data$v85)
   sd_speed <- sd(data$v85)
 
+  data_vis <- data
+
   data <- data %>%
     mutate(v85 = ((v85 - mean_speed) / sd_speed) * sd_voiture + mean_voiture) %>%
     pivot_longer(cols = c(v85, B_to_A, A_to_B), names_to = "Legend", values_to = "valeur")
@@ -71,7 +73,7 @@ plot_hour_threshold <- function(...) {
           panel.grid = element_line(color = "#E3E3E3"), # grid
           panel.border = element_rect(color = "#E3E3E3", size = 2)) #border of the chart
 
-  return(list(graph=graph,data=data))
+  return(list(graph=graph,data=data_vis))
 
 }
 
