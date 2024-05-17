@@ -1,10 +1,10 @@
   <!-- badges: start -->
-  [![R-CMD-check](https://github.com/agistaterre/telraamStats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agistaterre/telraamStats/actions/workflows/R-CMD-check.yaml)
+  [![R-CMD-check](https://github.com/agistaterre/telraamStatsAgisTaTerre/actions/workflows/R-CMD-check.yaml)](https://github.com/agistaterre/telraamStatsAgisTaTerre/actions/workflows/R-CMD-check.yaml)
   <!-- badges: end -->
 
-# telraamStats
+# telraamStatsAgisTaTerre
 
-The aim of this package is to grant the user tools for data visualisation and data analysis of mobility data for Telraam sensors. It reuses and expands on functionnalities from this [`application`](https://agistaterre.shinyapps.io/mov-around/).
+The aim of this package is to grant the user tools for data visualisation and data analysis of mobility data for Telraam sensors, especially it develops functionnalities for this [`application`](https://agistaterre.shinyapps.io/mov-around/).
 
 [`Link to the Github`](https://github.com/agistaterre/mov-around)
 
@@ -40,5 +40,5 @@ install.packages(c("cowplot",
 If you want to install this package, you can use :
 
 ``` r
-devtools::install_github("https://github.com/agistaterre/telraamStats")
+devtools::install_github("https://github.com/agistaterre/telraamStatsAgisTaTerre")
 ```
