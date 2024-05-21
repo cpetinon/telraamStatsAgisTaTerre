@@ -4,6 +4,9 @@
     <loc>http://annuaire.agistaterre.org/telraamStats/404.html</loc>
   </url>
   <url>
+    <loc>http://annuaire.agistaterre.org/telraamStats/LICENSE-text.html</loc>
+  </url>
+  <url>
     <loc>http://annuaire.agistaterre.org/telraamStats/articles/index.html</loc>
   </url>
   <url>
@@ -16,9 +19,6 @@
     <loc>http://annuaire.agistaterre.org/telraamStats/index.html</loc>
   </url>
   <url>
-    <loc>http://annuaire.agistaterre.org/telraamStats/LICENSE-text.html</loc>
-  </url>
-  <url>
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/api_state.html</loc>
   </url>
   <url>
@@ -26,9 +26,6 @@
   </url>
   <url>
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/decompose_2_fct.html</loc>
-  </url>
-  <url>
-    <loc>http://annuaire.agistaterre.org/telraamStats/reference/filtering.html</loc>
   </url>
   <url>
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/filter_date.html</loc>
@@ -40,6 +37,9 @@
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/filter_vacation.html</loc>
   </url>
   <url>
+    <loc>http://annuaire.agistaterre.org/telraamStats/reference/filtering.html</loc>
+  </url>
+  <url>
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/gg_na_dist.html</loc>
   </url>
   <url>
@@ -49,7 +49,7 @@
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/gg_working_sensor.html</loc>
   </url>
   <url>
-    <loc>http://annuaire.agistaterre.org/telraamStats/reference/importation.html</loc>
+    <loc>http://annuaire.agistaterre.org/telraamStats/reference/imp_na.html</loc>
   </url>
   <url>
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/import_sensor.html</loc>
@@ -58,7 +58,7 @@
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/import_sensor_comp.html</loc>
   </url>
   <url>
-    <loc>http://annuaire.agistaterre.org/telraamStats/reference/imp_na.html</loc>
+    <loc>http://annuaire.agistaterre.org/telraamStats/reference/importation.html</loc>
   </url>
   <url>
     <loc>http://annuaire.agistaterre.org/telraamStats/reference/index.html</loc>

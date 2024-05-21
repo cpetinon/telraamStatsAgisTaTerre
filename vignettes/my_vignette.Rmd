@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 # Load R packages
 
 ```{r setup}
-library(telraamStats)
+library(telraamStatsAgisTaTerre)
 library(dplyr)
 ```
 
