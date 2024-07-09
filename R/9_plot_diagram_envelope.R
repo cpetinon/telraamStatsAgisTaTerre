@@ -548,10 +548,13 @@ plot_diagram_envelope <- function (enriched_data,
     list_final_2$b<-list_charac$speed*list_final_2$b
 
     # Affiche le diagramme et les droites
-    plot(plot_lines(df,
+    graphique<-plot_lines(df,
                     list_final_1,
                     list_final_2,
-                    direction_choice))
+                    direction_choice)
+
+    plot(graphique$linear)
+    plot(graphique$parabolic)
   }
 }
 
@@ -617,12 +620,11 @@ plot_lines <- function (enriched_data,
   y_lim_2<- list_final_2$a * x_lim_2*x_lim_2+ list_final_2$b*x_lim_2
 
   #Plot the fundamental diagram and its envelope
-  graph1<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1, color = 'red')) +
+  graphique<-list(linear=NULL,parabolic=NULL)
+
+  graphique$linear<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1, color = 'red')) +
     geom_point(pch = 20) +
-    labs(x = 'Density', y = 'Speed', title = paste('Segment :', enriched_data$segment_fullname[1]))
-
-
-  graph1<-graph1+
+    labs(x = 'Density', y = 'Speed', title = paste('Segment :', enriched_data$segment_fullname[1]))+
     geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa+list_final_1$b),color='black')+
     geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa+list_final_2$b),color='black')+
     geom_point(aes(x = x_inter, y = y_inter_1), color = "green", size = 2) +
@@ -630,15 +632,12 @@ plot_lines <- function (enriched_data,
     geom_point(aes(x = x_lim_1, y = 0), color = "green", size = 2) +
     geom_text(aes(x = x_lim_1, y = 0,hjust=1, label = paste("x =", sprintf("%.2f", x_lim_1))))+
     coord_cartesian(xlim =c(0, x_lim_1), ylim = c(0, max(ordinate1)))
-  plot(graph1)
+
 
   #Plot the other one
-  graph2<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2, color = 'red')) +
+  graphique$parabolic<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2, color = 'red')) +
     geom_point(pch = 20) +
-    labs(x = 'Density', y = 'Flow', title = paste('Segment :', enriched_data$segment_fullname[1]))
-
-
-  graph2<-graph2+
+    labs(x = 'Density', y = 'Flow', title = paste('Segment :', enriched_data$segment_fullname[1]))+
     geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa*abscissa+list_final_1$b*abscissa),color='black')+
     geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa*abscissa+list_final_2$b*abscissa),color='black')+
     geom_point(aes(x = x_inter, y = y_inter_2), color = "green", size = 2) +
@@ -647,6 +646,7 @@ plot_lines <- function (enriched_data,
     geom_text(aes(x = x_lim_2, y = y_lim_2,vjust=-2, label = paste("y =", sprintf("%.2f", y_lim_2))))+
     coord_cartesian(xlim =c(0, max(abscissa)), ylim = c(0, max(ordinate2)))
 
+  return(graphique)
 }
 
 
