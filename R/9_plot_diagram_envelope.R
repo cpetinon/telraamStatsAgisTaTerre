@@ -418,7 +418,7 @@ filter_demand_user<-function (enriched_data,
                               holiday_choice=NULL)
 {
   if(!is.null(segments))
-  {enriched_data<-enriched_data %>% filter(segment_name %in% segments)}
+  {enriched_data<-enriched_data %>% filter(segment_id %in% segments)}
 
   if(!is.null(date_range))
   {enriched_data<-enriched_data[enriched_data$day>=date[1] & enriched_data$day<= date[2],]}
@@ -750,7 +750,7 @@ retrieve_missing_data<- function(enriched_data,
 {
 
   if(!is.null(segments))
-  {enriched_data<-enriched_data[enriched_data$segment_name==segments,]}
+  {enriched_data<-enriched_data[enriched_data$segment_id==segments,]}
 
   if(!is.null(date_range))
   {enriched_data<-enriched_data[enriched_data$day>=date_range[1] & enriched_data$day<= date_range[2],]}
