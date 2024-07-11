@@ -1,0 +1,59 @@
+---
+title: "Test"
+output: html_document
+date: "2024-07-11"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+```{r}
+# créons le fichier de configuration utile pour l'importation des données par Ketsia
+
+create_config <- function(segments = list("segment-01"="9000000000",
+                                          "segment-02"="9000000000"),
+                          create_directory=FALSE,
+                          overwrite=FALSE){
+  # parameters
+  project_folder = "inst/"
+  config_name = "config.yml"
+  template <- list("default"=list("url"="https://telraam-api.net/v1",
+                                  "segments"=segments))
+
+  if(!create_directory){ # if you don't want to create a directory in the project
+    temp_folder = tempdir() # temp directory
+    file_path = paste(temp_folder, config_name, sep = "/")
+  }
+  else{
+    if(!dir.exists(project_folder)){
+      dir.create(project_folder)
+    }
+    file_path = paste(project_folder, config_name, sep = "")
+  }
+  if(!file.exists(file_path) | overwrite){
+    file.create(file_path)
+    yaml::write_yaml(template, file_path)
+    result = TRUE
+  }
+  else {
+    warning("A configuration file already exists in the directory")
+    result = FALSE
+  }
+  return(result)
+}
+
+create_config(create_directory = TRUE)
+```
+
+```{r}
+token = 'DufxnmDyaJ21hntBCa2u04vC59Azc6Eu8meaHe8B'
+
+Burel_01 = telraamStats::retrieve_sensor(segment_name ="Burel-01", 
+                            start_date = as.Date('2022-05-01'), 
+                            end_date = as.Date('2024-06-30'), key = token)
+```
+
