@@ -10,10 +10,7 @@
 #'
 #' @keywords internal
 #'
-#' @examples
-#' enriched_traffic <- enrich_traffic(traffic[0:10,])
-#' setdiff(colnames(enriched_traffic[0:10,]), colnames(traffic[0:10,]))
-#'
+
 enrich_traffic <- function(data){
   enriched_data <- enrich_dates(data)
   enriched_data <- enrich_special_days(enriched_data)
@@ -34,11 +31,7 @@ enrich_traffic <- function(data){
 #'
 #' @keywords internal
 #'
-#' @examples
-#' df <- data.frame('date' = c("2022-02-18 08:00:00 CET","2022-02-18 09:00:00 CET"),
-#'   stringsAsFactors = FALSE)
-#' enrich_dates(df)
-#'
+
 enrich_dates <- function(data){
 
   # weekday labels
@@ -73,10 +66,7 @@ enrich_dates <- function(data){
 #'
 #' @keywords internal
 #'
-#' @examples
-#' df <- data.frame('segment_id' = c(9000002156, 9000001906))
-#' enrich_name(df)
-#'
+
 enrich_name <- function(data){
 
   enriched_data <- data %>%
@@ -100,10 +90,7 @@ enrich_name <- function(data){
 #'
 #' @keywords internal
 #'
-#' @examples
-#' df <- data.frame('uptime' = c(0.05, 0.95))
-#' enrich_uptime(df)
-#'
+
 enrich_uptime <- function(data){
   enriched_data <- data %>%
     mutate(uptime_quality = (.data$uptime >= 0.5))

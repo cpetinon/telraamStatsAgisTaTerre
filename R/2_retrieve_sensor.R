@@ -17,12 +17,7 @@
 #' @importFrom dplyr filter bind_rows %>%
 #' @export
 #'
-#' @examples
-#' \dontrun{ # This function requires a valid API key
-#' period <- as.Date(c('2022-01-01', '2022-12-31'))
-#' retrieve_sensor('RteVitre-06', period[1], period[2])
-#' }
-#'
+
 retrieve_sensor <- function(segment_name,start_date,end_date, key = get_telraam_token()){
 
   result <- data.frame()

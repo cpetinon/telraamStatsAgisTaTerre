@@ -191,3 +191,105 @@ filtering <- function(data = NULL, sensor    = NULL, direction = ' ', mobility  
   return(filtre)
 }
 
+
+#' Get the name of a segment giving its id
+#'
+#' @param segment_id ID of segment, should be present in inst/config.yml
+#'
+#' @return Name of the segment, as specified in the configuration file, NULL otherwise.
+#' @export
+#'
+#' @keywords internal
+#'
+
+get_segment_name <- function(segment_id){
+  segments <- get_segments()
+  if(is.null(segments)){
+    return(NULL)
+  }
+  if(!segment_id %in% segments){
+    message('This ID is unknown. Please update configuration file.')
+    return(NULL)
+  }
+  return(names(segments)[segments==segment_id])
+}
+
+
+  #' Indicates if a date is in vacation period and if true, which vacation.
+  #'
+  #' @description
+  #' If the date is not in a vacation period, "No vacation" is returned.
+  #'
+  #' @param date Date (character format)
+  #' @param vacation Dataframe of vacations, same format as set_globals_vars output.
+  #'
+  #' @return Vacation description if the day is between two dates, "No vacation" otherwise.
+  #' @export
+  #'
+  #' @importFrom dplyr between
+  #'
+  #' @keywords internal
+  #'
+
+  is_vacation <- function(date, vacation){
+    date <- as.POSIXct(date)
+    vacation_test <- vacation %>%
+      mutate(date = date,
+             in_period = between(.data$date, .data$start_date, .data$end_date)) %>%
+      filter(.data$in_period)
+    if(nrow(vacation_test) > 0){
+      vacation <- vacation_test$description
+    }
+    else {
+      vacation <- "No vacation"
+    }
+    return(vacation)
+  }
+
+
+
+#' Get Telraam segments into a named vector
+#'
+#' @description
+#' Get Telraam segments info in yml file and transform them into a named vector
+#'
+#' @return Named vector with names and segment IDs, NULL if there is no configuration file
+#' @importFrom stats setNames
+#'
+#' @keywords internal
+#'
+#' @export
+#'
+get_segments <- function(){
+  file_path = get_config_path()
+  if(!file.exists(file_path)){
+    segments <- NULL
+  } else {
+    segments <- config::get(file = file_path)$segments
+  }
+  return(segments)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
