@@ -1,50 +1,50 @@
 #' Imports data associated with a list of sensors
 #'
+#' @description
 #' Imports data associated with a given list of sensor names from .RData files contained in a data directory.
 #' The main purpose of this function is to load the data saved with write update data.
 #'
 #' @param list_sensor A character vector specifying the names of sensors to import data for.
-#' @param sensor_names A character vector containing the name of each sensor that is displayed to the user
-#' @param sensor_ids A numeric vector containing the identifier name for each vector
 #'
-#' @return A data.frame containing the imported data.
+#' @return A dataframe containing the imported data.
 #'
 #' @importFrom purrr map_dfr
 #' @importFrom lubridate ymd_hms
 #'
-#'
 #' @export
 #'
-import_sensor <- function(list_sensor,
-                        sensor_names = c("Burel-01","Leclerc-02","ParisMarche-03","rueVignes-04","ParisArcEnCiel-05","RteVitre-06",
-                                         "RueGdDomaine-07","StDidierNord-08","rueVallee-09","StDidierSud-10","RuePrieure-11",
-                                         "RueCottage-12","RueVeronniere-13","RueDesEcoles-14","RueManoirs-15","RueToursCarree-16",
-                                         "PlaceHotelDeVille-17","BoulevardLiberte-18"),
-                        sensor_ids = c(9000002156, 9000001906, 9000001618,9000003090,9000002453,9000001844,
-                                       9000001877,9000002666,9000002181,9000002707,9000003703,
-                                       9000003746,9000003775,9000003736,9000004971,9000004130,
-                                       9000004042,9000004697)
-                        ){
+#' @examples
+#' \dontrun{ # This example requires a valid API key
+#' period <- as.Date(c('2022-01-01', '2022-12-31'))
+#' write_update_data('RteVitre-06', period[1], period[2])
+#' write_update_data('ParisArcEnCiel-05', period[1], period[2])
+#' import_sensor(c('RteVitre-06', 'ParisArcEnCiel-05'))
+#' }
+import_sensor <- function(list_sensor){
 
   data <- data.frame()
-  name_sensor <- sensor_names[sensor_ids%in%list_sensor]
-  data <- map_dfr(name_sensor, ~ {
-    file <- paste0('data/', .x, '.RData')
+
+  for(sensor in list_sensor){
+    if(is.na(get_segments()[sensor])){
+      stop(paste(sensor, "doesn't exist in your configuration file"))
+    }
+  }
+
+  if(dir.exists('data/')){
+    folder_path = 'data/'
+  } else {
+    folder_path = paste(tempdir(), '/', sep = "")
+  }
+
+  data <- map_dfr(list_sensor, ~ {
+    file <- paste0(folder_path, .x, '.RData')
     if (file.exists(file)) {
       # we select the data that we don't consider null (arbitrary choice)
       import <- load(file)
       import <- get(import)
-      import <- import %>% filter(.data$uptime > 0.5,
-                                           .data$heavy_lft + .data$car_lft + .data$pedestrian_lft + .data$bike_lft +
-                                             .data$heavy_rgt + .data$car_rgt + .data$pedestrian_rgt + .data$bike_rgt >0)
-      import$car_speed_hist_0to70plus <-  convert_string_to_list(import$car_speed_hist_0to70plus)
-      import$car_speed_hist_0to120plus <- convert_string_to_list(import$car_speed_hist_0to120plus)
-      import$date <- ymd_hms(import$date)
-
-
       import
     } else {
-      NULL
+      message(paste('No data stored for', .x))
     }
   })
   data
