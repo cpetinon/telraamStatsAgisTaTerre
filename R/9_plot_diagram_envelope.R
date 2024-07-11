@@ -66,7 +66,6 @@ calculate_characteristic<- function (enriched_data,
   {
     density <- sum(enriched_data$veh_km,na.rm = TRUE)/length(enriched_data$veh_km)
     speed<- sum(enriched_data$km_h,na.rm = TRUE)/length(enriched_data$km_h)
-    flow<- sum(enriched_data$veh_h,na.rm = TRUE)/length(enriched_data$veh_h)
   }
 
 
@@ -74,18 +73,16 @@ calculate_characteristic<- function (enriched_data,
   {
     density<-sum(enriched_data$veh_km_lft,na.rm = TRUE)/length(enriched_data$veh_km_lft)
     speed<-sum(enriched_data$km_h_lft,na.rm = TRUE)/length(enriched_data$km_h_lft)
-    flow<- sum(enriched_data$veh_h_lft,na.rm = TRUE)/length(enriched_data$veh_h_lft)
   }
 
   else
   {
     density<-sum(enriched_data$veh_km_rgt,na.rm = TRUE)/length(enriched_data$veh_km_rgt)
     speed<-sum(enriched_data$km_h_rgt,na.rm = TRUE)/length(enriched_data$km_h_rgt)
-    flow<- sum(enriched_data$veh_h_rgt,na.rm = TRUE)/length(enriched_data$veh_h_rgt)
   }
 
 
-  return(list(flow=flow,speed=speed,density=density))
+  return(list(speed=speed,density=density))
 
 }
 
@@ -119,8 +116,7 @@ calculate_data_dimensionless<- function (enriched_data,
     enriched_data <- enriched_data %>%
       mutate (
         veh_km_adim=veh_km/list_charac$density,
-        km_h_adim=km_h/list_charac$speed,
-        veh_h_adim= veh_h/list_charac$flow)
+        km_h_adim=km_h/list_charac$speed)
   }
 
   else if (direction_choice=='lft')
@@ -128,8 +124,7 @@ calculate_data_dimensionless<- function (enriched_data,
     enriched_data <- enriched_data %>%
       mutate (
         veh_km_lft_adim=veh_km_lft/list_charac$density,
-        km_h_lft_adim=km_h_lft/list_charac$speed,
-        veh_h_lft_adim=veh_h_lft/list_charac$flow)
+        km_h_lft_adim=km_h_lft/list_charac$speed)
   }
 
   else
@@ -137,8 +132,7 @@ calculate_data_dimensionless<- function (enriched_data,
     enriched_data <- enriched_data %>%
       mutate (
         veh_km_rgt_adim=veh_km_rgt/list_charac$density,
-        km_h_rgt_adim=km_h_rgt/list_charac$speed,
-        veh_h_rgt_adim=veh_h_rgt/list_charac$flow)
+        km_h_rgt_adim=km_h_rgt/list_charac$speed)
   }
 
   return(enriched_data)
@@ -622,28 +616,34 @@ plot_lines <- function (enriched_data,
   #Plot the fundamental diagram and its envelope
   graphique<-list(linear=NULL,parabolic=NULL)
 
-  graphique$linear<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1, color = 'red')) +
+  graphique$linear<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1)) +
     geom_point(pch = 20) +
-    labs(x = 'Density', y = 'Speed', title = paste('Segment :', enriched_data$segment_fullname[1]))+
-    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa+list_final_1$b),color='black')+
-    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa+list_final_2$b),color='black')+
-    geom_point(aes(x = x_inter, y = y_inter_1), color = "green", size = 2) +
-    geom_text(aes(x = x_inter, y = y_inter_1,hjust=-1, label = paste("x =", sprintf("%.2f", x_inter))))+
-    geom_point(aes(x = x_lim_1, y = 0), color = "green", size = 2) +
-    geom_text(aes(x = x_lim_1, y = 0,hjust=1, label = paste("x =", sprintf("%.2f", x_lim_1))))+
+    labs(x = 'Density (veh/km)', y = 'Speed (km/h)', title = paste('Segment :', enriched_data$segment_fullname[1]))+
+    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa+list_final_1$b),color='red')+
+    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa+list_final_2$b),color='blue')+
+
+    geom_point(aes(x = x_inter, y = y_inter_1),shape=15, color = "orange", size = 3) +
+    geom_text(aes(x = x_inter, y = y_inter_1,hjust=-0.5, label = paste("x =", sprintf("%.2f", x_inter))))+
+
+    geom_point(aes(x = x_lim_1, y = 0),shape=15, color = "orange", size = 3) +
+    geom_text(aes(x = x_lim_1, y = 0,hjust=1.4, label = paste("x =", sprintf("%.2f", x_lim_1))))+
+
     coord_cartesian(xlim =c(0, x_lim_1), ylim = c(0, max(ordinate1)))
 
 
   #Plot the other one
-  graphique$parabolic<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2, color = 'red')) +
+  graphique$parabolic<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2)) +
     geom_point(pch = 20) +
-    labs(x = 'Density', y = 'Flow', title = paste('Segment :', enriched_data$segment_fullname[1]))+
-    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa*abscissa+list_final_1$b*abscissa),color='black')+
-    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa*abscissa+list_final_2$b*abscissa),color='black')+
-    geom_point(aes(x = x_inter, y = y_inter_2), color = "green", size = 2) +
-    geom_text(aes(x = x_inter, y = y_inter_2,hjust=2, label = paste("y =", sprintf("%.2f", y_inter_2))))+
-    geom_point(aes(x = x_lim_2, y = y_lim_2), color = "green", size = 2) +
-    geom_text(aes(x = x_lim_2, y = y_lim_2,vjust=-2, label = paste("y =", sprintf("%.2f", y_lim_2))))+
+    labs(x = 'Density (veh/km)', y = 'Flow (veh/h)', title = paste('Segment :', enriched_data$segment_fullname[1]))+
+    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa*abscissa+list_final_1$b*abscissa),color='red')+
+    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa*abscissa+list_final_2$b*abscissa),color='blue')+
+
+    geom_point(aes(x = x_inter, y = y_inter_2),shape=15, color = "orange", size = 3) +
+    geom_text(aes(x = x_inter, y = y_inter_2,hjust=1.5, label = paste("y =", sprintf("%.2f", y_inter_2))))+
+
+    geom_point(aes(x = x_lim_2, y = y_lim_2),shape=15, color = "orange", size = 3) +
+    geom_text(aes(x = x_lim_2, y = y_lim_2,hjust=-0.5, label = paste("y =", sprintf("%.2f", y_lim_2))))+
+
     coord_cartesian(xlim =c(0, max(abscissa)), ylim = c(0, max(ordinate2)))
 
   return(graphique)
