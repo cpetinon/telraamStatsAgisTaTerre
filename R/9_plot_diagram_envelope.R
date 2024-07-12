@@ -427,7 +427,7 @@ filter_demand_user<-function (enriched_data,
 
   if(!is.null(vacation_choice))
   {
-    if(vacation_choice==FALSE)
+    if(vacation_choice==FALSE || vacation_choice=="NO")
     {enriched_data<-enriched_data[enriched_data$vacation!='no vacation',]}
 
     else
