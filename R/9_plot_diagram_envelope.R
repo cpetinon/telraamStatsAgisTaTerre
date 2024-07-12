@@ -492,7 +492,7 @@ plot_diagram_envelope <- function (enriched_data,
                                    NumberOfOrdinate=45,
                                    percent1=c(95,99),
                                    percent2=c(95,99))
-{
+{ start = Sys.time()
   enriched_data<-filter_demand_user(enriched_data,
                                     segments,
                                     date_range,
@@ -545,9 +545,11 @@ plot_diagram_envelope <- function (enriched_data,
                           list_final_1,
                           list_final_2,
                           direction_choice)
+    result = list(lineaire=graphique$linear,parabolique=graphique$parabolic)
 
-    plot(graphique$linear)
-    plot(graphique$parabolic)
+    end = Sys.time()
+    print(end-start)
+    return(result)
   }
 }
 
