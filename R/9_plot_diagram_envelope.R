@@ -617,35 +617,29 @@ plot_lines <- function (enriched_data,
   #Plot the fundamental diagram and its envelope
   graphique<-list(linear=NULL,parabolic=NULL)
 
-  graphique$linear<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1)) +
-    geom_point(pch = 20) +
-    labs(x = 'Density (veh/km)', y = 'Speed (km/h)', title = paste('Segment :', enriched_data$segment_fullname[1]))+
-    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa+list_final_1$b),color='red')+
-    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa+list_final_2$b),color='blue')+
-
-    geom_point(aes(x = x_inter, y = y_inter_1),shape=15, color = "orange", size = 3) +
-    geom_text(aes(x = x_inter, y = y_inter_1,hjust=-0.5, label = paste("x =", sprintf("%.2f", x_inter))))+
-
-    geom_point(aes(x = x_lim_1, y = 0),shape=15, color = "orange", size = 3) +
-    geom_text(aes(x = x_lim_1, y = 0,hjust=1.4, label = paste("x =", sprintf("%.2f", x_lim_1))))+
-
-    coord_cartesian(xlim =c(0, x_lim_1), ylim = c(0, max(ordinate1)))
+  graphique$linear <- ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1)) +
+    geom_point(pch = 20, na.rm = TRUE) +
+    labs(x = 'Density (veh/km)', y = 'Speed (km/h)', title = paste('Segment :', enriched_data$segment_fullname[1])) +
+    geom_line(mapping = aes(x = abscissa, y = list_final_1$a * abscissa + list_final_1$b), color = 'red', na.rm = TRUE) +
+    geom_line(mapping = aes(x = abscissa, y = list_final_2$a * abscissa + list_final_2$b), color = 'blue', na.rm = TRUE) +
+    annotate("point", x = x_inter, y = y_inter_1, shape = 15, color = "orange", size = 3) +
+    annotate("text", x = x_inter, y = y_inter_1, hjust = -0.5, label = paste("x =", sprintf("%.2f", x_inter))) +
+    annotate("point", x = x_lim_1, y = 0, shape = 15, color = "orange", size = 3) +
+    annotate("text", x = x_lim_1, y = 0, hjust = 1.4, label = paste("x =", sprintf("%.2f", x_lim_1))) +
+    coord_cartesian(xlim = c(0, x_lim_1), ylim = c(0, max(ordinate1)))
 
 
   #Plot the other one
-  graphique$parabolic<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2)) +
-    geom_point(pch = 20) +
-    labs(x = 'Density (veh/km)', y = 'Flow (veh/h)', title = paste('Segment :', enriched_data$segment_fullname[1]))+
-    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa*abscissa+list_final_1$b*abscissa),color='red')+
-    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa*abscissa+list_final_2$b*abscissa),color='blue')+
-
-    geom_point(aes(x = x_inter, y = y_inter_2),shape=15, color = "orange", size = 3) +
-    geom_text(aes(x = x_inter, y = y_inter_2,hjust=1.5, label = paste("y =", sprintf("%.2f", y_inter_2))))+
-
-    geom_point(aes(x = x_lim_2, y = y_lim_2),shape=15, color = "orange", size = 3) +
-    geom_text(aes(x = x_lim_2, y = y_lim_2,hjust=-0.5, label = paste("y =", sprintf("%.2f", y_lim_2))))+
-
-    coord_cartesian(xlim =c(0, max(abscissa)), ylim = c(0, max(ordinate2)))
+  graphique$parabolic <- ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2)) +
+    geom_point(pch = 20, na.rm = TRUE) +
+    labs(x = 'Density (veh/km)', y = 'Flow (veh/h)', title = paste('Segment :', enriched_data$segment_fullname[1])) +
+    geom_line(mapping = aes(x = abscissa, y = list_final_1$a * abscissa * abscissa + list_final_1$b * abscissa), color = 'red', na.rm = TRUE) +
+    geom_line(mapping = aes(x = abscissa, y = list_final_2$a * abscissa * abscissa + list_final_2$b * abscissa), color = 'blue', na.rm = TRUE) +
+    annotate("point", x = x_inter, y = y_inter_2, shape = 15, color = "orange", size = 3) +
+    annotate("text", x = x_inter, y = y_inter_2, hjust = 1.5, label = paste("y =", sprintf("%.2f", y_inter_2))) +
+    annotate("point", x = x_lim_2, y = y_lim_2, shape = 15, color = "orange", size = 3) +
+    annotate("text", x = x_lim_2, y = y_lim_2, hjust = -0.5, label = paste("y =", sprintf("%.2f", y_lim_2))) +
+    coord_cartesian(xlim = c(0, max(abscissa)), ylim = c(0, max(ordinate2)))
 
   return(graphique)
 }
