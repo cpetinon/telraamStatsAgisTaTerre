@@ -414,7 +414,7 @@ filter_demand_user<-function (enriched_data,
   {enriched_data<-enriched_data %>% filter(segment_id %in% segments)}
 
   if(!is.null(date_range))
-  {enriched_data<-enriched_data[enriched_data$day>=date[1] & enriched_data$day<= date[2],]}
+  {enriched_data<-enriched_data[enriched_data$day>=date_range[1] & enriched_data$day<= date_range[2],]}
 
   enriched_data$weekday<-tolower(enriched_data$weekday)
   tolower(weekday_choice)

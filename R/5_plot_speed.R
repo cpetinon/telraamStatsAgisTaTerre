@@ -75,7 +75,7 @@ plot_speed <- function(...){
   }
 
   chart <- ggplot(data_plot)+
-    aes(x=.data$count, y=.data$speed, color = .data$legend, group=.data$legend)+
+    aes(x=.data$count, y=.data$percentage, color = .data$legend, group=.data$legend)+
     geom_line(color="black")+ geom_smooth(method='gam', formula=y ~ s(x, bs = "cs"))+
     labs(x="Nombre de vehicules sur une tranche horaire", y = "Pourcentage de vehicule depassant la vitesse donnees")+
     ggtitle("Evolution de la vitesse de conduite selon le nombre d'usagers") +
@@ -84,7 +84,7 @@ plot_speed <- function(...){
     theme_bw()+
     theme(panel.background = element_rect(fill = "#F5F5F5"), # background color
           panel.grid = element_line(color = "#E3E3E3"), # grid color
-          panel.border = element_rect(color = "#E3E3E3", size = 2)) # border color and size
+          panel.border = element_rect(color = "#E3E3E3", linewidth = 2)) # border color and size
 
   return(list(chart=chart,
               DE_test = DE_test,
