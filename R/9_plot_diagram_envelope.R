@@ -425,11 +425,13 @@ filter_demand_user<-function (enriched_data,
   if(!is.null(segments))
   {enriched_data<-enriched_data %>% filter(segment_id %in% segments)}
 
-  if(!is.null(date_range))
-  {enriched_data<-enriched_data[enriched_data$day>=date_range[1] & enriched_data$day<= date_range[2],]}
+  if (!is.null(date_range))
+  {
+    enriched_data <- enriched_data %>% filter(day >= date_range[1] & day <= date_range[2] )
+  }
 
-  enriched_data$weekday<-tolower(enriched_data$weekday)
-  tolower(weekday_choice)
+  enriched_data$weekday <- tolower(enriched_data$weekday)
+  weekday_choice <- tolower(weekday_choice)
 
   if(!is.null(weekday_choice))
   { enriched_data<-enriched_data %>% filter(weekday %in% weekday_choice)}
@@ -438,25 +440,20 @@ filter_demand_user<-function (enriched_data,
   {enriched_data<-enriched_data %>% filter(hour %in% hour_choice)}
 
   if(!is.null(vacation_choice))
-  {
-    if(vacation_choice==FALSE || vacation_choice=="NO")
-    {enriched_data<-enriched_data[enriched_data$vacation=='no vacation',]}
+    if (!is.null(vacation_choice)) {
+      if (vacation_choice == "NO") {
+        enriched_data <- enriched_data %>% filter(vacation == 'No vacation')
+      } else if (vacation_choice == "ONLY") {
+        enriched_data <- enriched_data %>% filter(vacation != 'No vacation')
+      }
+    }
 
-    else if(vacation_choice==TRUE || vacation_choice=="ONLY")
-    {enriched_data<-enriched_data[enriched_data$vacation!='no vacation',]}
-
-    else { enriched_data = enriched_data}
-  }
-
-  if(!is.null(holiday_choice))
-  {
-    if(holiday_choice==FALSE || holiday_choice=="NO")
-    {enriched_data<-enriched_data[enriched_data$holiday_choice!='TRUE',]}
-
-    else if(holiday_choice==TRUE || holiday_choice=="ONLY")
-    {enriched_data<-enriched_data[enriched_data$holiday_choice=='TRUE',]}
-
-    else { enriched_data = enriched_data}
+  if (!is.null(holiday_choice)) {
+    if (holiday_choice == "NO") {
+      enriched_data <- enriched_data %>% filter(!holiday)
+    } else if (holiday_choice == "ONLY") {
+      enriched_data <- enriched_data %>% filter(holiday)
+    }
   }
 
   enriched_data$weekend<-ifelse(enriched_data$weekday %in% c('saturday','sunday'), "Weekend", "Week")
