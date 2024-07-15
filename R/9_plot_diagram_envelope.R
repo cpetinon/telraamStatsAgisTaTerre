@@ -429,7 +429,7 @@ filter_demand_user<-function (enriched_data,
   {enriched_data<-enriched_data[enriched_data$day>=date_range[1] & enriched_data$day<= date_range[2],]}
 
   enriched_data$weekday<-tolower(enriched_data$weekday)
-  weekday_choice = tolower(weekday_choice)
+  tolower(weekday_choice)
 
   if(!is.null(weekday_choice))
   { enriched_data<-enriched_data %>% filter(weekday %in% weekday_choice)}
