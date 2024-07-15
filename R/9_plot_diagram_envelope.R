@@ -545,11 +545,9 @@ plot_diagram_envelope <- function (enriched_data,
                           list_final_1,
                           list_final_2,
                           direction_choice)
-    result = list(lineaire=graphique$linear,parabolique=graphique$parabolic)
 
-    end = Sys.time()
-    print(end-start)
-    return(result)
+    print(Sys.time()-start)
+    return(list(lineaire=graphique$linear,parabolique=graphique$parabolic))
   }
 }
 
