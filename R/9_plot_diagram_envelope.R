@@ -439,7 +439,7 @@ filter_demand_user<-function (enriched_data,
 
   if(!is.null(vacation_choice))
   {
-    if(vacation_choice==FALSE || vacation_choice=="NO"))
+    if(vacation_choice==FALSE || vacation_choice=="NO")
     {enriched_data<-enriched_data[enriched_data$vacation!='no vacation',]}
 
     else if(vacation_choice==TRUE || vacation_choice=="YES")
@@ -448,7 +448,7 @@ filter_demand_user<-function (enriched_data,
 
   if(!is.null(holiday_choice))
   {
-    if(holiday_choice==FALSE || holiday_choice=="NO"))
+    if(holiday_choice==FALSE || holiday_choice=="NO")
 {enriched_data<-enriched_data[enriched_data$holiday_choice!='TRUE',]}
 
 else if(holiday_choice==TRUE || holiday_choice=="YES")
