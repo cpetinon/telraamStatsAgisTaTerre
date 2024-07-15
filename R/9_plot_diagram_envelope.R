@@ -597,8 +597,11 @@ plot_lines <- function (enriched_data,
   if(!("speed_hist_car_lft" %in% colnames(enriched_data)) || is.null(direction_choice))
   {
     abscissa<-enriched_data$veh_km
+    print(sum(is.na(abscissa)))
     ordinate1<-enriched_data$km_h
+    print(max(ordinate1))
     ordinate2<-enriched_data$veh_h
+    print(max(ordinate2))
   }
 
   else if(direction_choice=='lft')
@@ -639,7 +642,7 @@ plot_lines <- function (enriched_data,
     annotate("point",x = x_lim_1, y = 0,shape=15, color = "orange", size = 3) +
     annotate("text",x = x_lim_1, y = 0,hjust=1.5, label = paste("x =", sprintf("%.2f", x_lim_1)))+
 
-    coord_cartesian(xlim =c(0, x_lim_1), ylim = c(0, max(ordinate1)))
+    coord_cartesian(xlim =c(0, x_lim_1), ylim = c(0, max(ordinate1, na.rm = TRUE)))
 
 
   #Plot the other one
@@ -655,7 +658,7 @@ plot_lines <- function (enriched_data,
     annotate("point",x = x_lim_2, y = y_lim_2,shape=15, color = "orange", size = 3) +
     annotate("text",x = x_lim_2, y = y_lim_2,hjust=-0.5, label = paste("y =", sprintf("%.2f", y_lim_2)))+
 
-    coord_cartesian(xlim =c(0, max(abscissa)), ylim = c(0, max(ordinate2)))
+    coord_cartesian(xlim =c(0, max(abscissa)), ylim = c(0, max(ordinate2, na.rm = TRUE)))
 
   return(graphique)
 }
@@ -815,7 +818,7 @@ retrieve_missing_hours<-function(enriched_data,
                                  ifelse(month(enriched_data$date) %in% c(6,7,8), "Summer",
                                         ifelse(month(enriched_data$date) %in% c(9,10,11), "Autumn", "Winter")))
 
-  df_season<-enriched_data %>% group_by(segment_id,season,hour) %>% summarise(condition=any(car!=0 & uptime>uptime_choice))
+  df_season<-enriched_data %>% group_by(segment_id,season,hour) %>% summarise(condition=any(car!=0 & uptime>uptime_choice), .groups = "keep")
 
   enriched_data <- enriched_data %>% semi_join(df_season %>% filter(condition), by = c("segment_id","season", "hour"))
 
