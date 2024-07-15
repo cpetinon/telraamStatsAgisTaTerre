@@ -396,7 +396,7 @@ create_necessary_column <- function (enriched_data,direction_choice=NULL)
 #' @param weekday_choice weekday Character vector. Weekday choosen. Default to the all week.
 #' @param hour_choice Integer vector. Hours choosen, default to the all day.
 #' @param vacation_choice Character vector. Selected vacation. Full period by default (NULL).
-#' @param holiday_choice Boolean. Selected holiday.  Full period by default (NULL).
+#' @param holiday_choise Boolean. Selected holiday.  Full period by default (NULL).
 #'
 #' @return enriched_data
 #' @export
@@ -414,54 +414,52 @@ create_necessary_column <- function (enriched_data,direction_choice=NULL)
 #'  holiday_choice=TRUE,
 #'  segments = 'RteVitre-06')
 
-filter_demand_user <- function (enriched_data,
-                                segments = NULL,
-                                date_range = NULL,
-                                weekday_choice = NULL,
-                                hour_choice = NULL,
-                                vacation_choice = NULL,
-                                holiday_choice = NULL)
+filter_demand_user<-function (enriched_data,
+                              segments=NULL,
+                              date_range=NULL,
+                              weekday_choice=NULL,
+                              hour_choice=NULL,
+                              vacation_choice=NULL,
+                              holiday_choice=NULL)
 {
-  if (!is.null(segments))
+  if(!is.null(segments))
+  {enriched_data<-enriched_data %>% filter(segment_id %in% segments)}
+
+  if(!is.null(date_range))
+  {enriched_data<-enriched_data[enriched_data$day>=date_range[1] & enriched_data$day<= date_range[2],]}
+
+  enriched_data$weekday<-tolower(enriched_data$weekday)
+  tolower(weekday_choice)
+
+  if(!is.null(weekday_choice))
+  { enriched_data<-enriched_data %>% filter(weekday %in% weekday_choice)}
+
+  if(!is.null(hour_choice))
+  {enriched_data<-enriched_data %>% filter(hour %in% hour_choice)}
+
+  if(!is.null(vacation_choice))
   {
-    enriched_data <- enriched_data %>% filter(segment_id %in% segments)
+    if(vacation_choice==FALSE || vacation_choice=="NO")
+    {enriched_data<-enriched_data[enriched_data$vacation=='no vacation',]}
+
+    else if(vacation_choice==TRUE || vacation_choice=="ONLY")
+    {enriched_data<-enriched_data[enriched_data$vacation!='no vacation',]}
+
+    else { enriched_data = enriched_data}
   }
 
-  if (!is.null(date_range))
+  if(!is.null(holiday_choice))
   {
-    enriched_data <- enriched_data %>% filter(day >= date_range[1] & day <= date_range[2] )
+    if(holiday_choice==FALSE || holiday_choice=="NO")
+    {enriched_data<-enriched_data[enriched_data$holiday_choice!='TRUE',]}
+
+    else if(holiday_choice==TRUE || holiday_choice=="ONLY")
+    {enriched_data<-enriched_data[enriched_data$holiday_choice=='TRUE',]}
+
+    else { enriched_data = enriched_data}
   }
 
-  enriched_data$weekday <- tolower(enriched_data$weekday)
-  weekday_choice <- tolower(weekday_choice)
-
-  if (!is.null(weekday_choice))
-  {
-    enriched_data <- enriched_data %>% filter(weekday %in% weekday_choice)
-  }
-
-  if (!is.null(hour_choice))
-  {
-    enriched_data <- enriched_data %>% filter(hour %in% hour_choice)
-  }
-
-  if (!is.null(vacation_choice)) {
-    if (vacation_choice == "NO") {
-      enriched_data <- enriched_data %>% filter(vacation == 'no vacation')
-    } else if (vacation_choice == "ONLY") {
-      enriched_data <- enriched_data %>% filter(vacation != 'no vacation')
-    }
-  }
-
-  if (!is.null(holiday_choice)) {
-    if (holiday_choice == "NO") {
-      enriched_data <- enriched_data %>% filter(!holiday)
-    } else if (holiday_choice == "ONLY") {
-      enriched_data <- enriched_data %>% filter(holiday)
-    }
-  }
-
-  enriched_data$weekend <- ifelse(enriched_data$weekday %in% c('saturday', 'sunday'), "Weekend", "Week")
+  enriched_data$weekend<-ifelse(enriched_data$weekday %in% c('saturday','sunday'), "Weekend", "Week")
   return(enriched_data)
 }
 
@@ -477,7 +475,7 @@ filter_demand_user <- function (enriched_data,
 #' @param weekday_choice weekday Character vector. Weekday choosen. Default to the all week.
 #' @param hour_choice Integer vector. Hours choosen, default to the all day.
 #' @param vacation_choice Character vector. Selected vacation. Full period by default (NULL).
-#' @param holiday_choice Boolean. Selected holiday.  Full period by default (NULL).
+#' @param holiday_choise Boolean. Selected holiday.  Full period by default (NULL).
 #' @param direction_choice Character Direction choosen. Default to NULL.
 #' @param NumberOfSlope Integer. Number of slope tested. Default to 50.
 #' @param NumberOfOrdinate Integer. Number of ordinate tested. Default to 45.
@@ -498,10 +496,11 @@ filter_demand_user <- function (enriched_data,
 #'   hour_choice= c(1,5,10,14,21),
 #'   vacation_choice=NULL,
 #'   holiday_choice=TRUE,
-#'   segment = '9000002156',
+#'   segments = 'RteVitre-06',
 #'   NumberOfSlope=60,
 #'   NumberOfOrdinate=65,
 #'   direction_choice='lft)
+
 
 
 plot_diagram_envelope <- function(enriched_data,
@@ -568,7 +567,7 @@ plot_diagram_envelope <- function(enriched_data,
   # Plot the diagram and lines
   graphique <- plot_lines(df, list_final_1, list_final_2, direction_choice)
 
-  return(list(lineaire = graphique$linear, parabolique = graphique$parabolic))
+  return(list(linear = graphique$linear, parabolic = graphique$parabolic))
 }
 
 
@@ -587,94 +586,89 @@ plot_diagram_envelope <- function(enriched_data,
 #' @export
 #'
 #' @import dplyr
-  #' @import lubridate
-  #' @import ggplot2
-  #'
-  #' @examples
-  #' plot_lines(traffic,
-  #'   list_final_1=c(-0.1,70),
-  #'   list_final_2=c(-5,80),
-  #'   direction_choice=NULL)
+#' @import lubridate
+#' @import ggplot2
+#'
+#' @examples
+#' plot_lines(traffic,
+#'   list_final_1=c(-0.1,70),
+#'   list_final_2=c(-5,80),
+#'   direction_choice=NULL)
 
-  plot_lines <- function (enriched_data,
-                          list_final_1,
-                          list_final_2,
-                          direction_choice=NULL)
+plot_lines <- function (enriched_data,
+                        list_final_1,
+                        list_final_2,
+                        direction_choice=NULL)
+{
+  #Define the axes of the diagram
+  if(!("speed_hist_car_lft" %in% colnames(enriched_data)) || is.null(direction_choice))
   {
-    #Define the axes of the diagram
-    if(!("speed_hist_car_lft" %in% colnames(enriched_data)) || is.null(direction_choice))
-    {
-      abscissa<-enriched_data$veh_km
-      print(max(abscissa))
-      ordinate1<-enriched_data$km_h
-      print(max(ordinate1))
-      ordinate2<-enriched_data$veh_h
-      print(max(ordinate2))
-    }
-
-    else if(direction_choice=='lft')
-    {
-      abscissa<-enriched_data$veh_km_lft
-      ordinate1<-enriched_data$km_h_lft
-      ordinate2<-enriched_data$veh_h_lft
-    }
-
-    else
-    {
-      abscissa<-enriched_data$veh_km_rgt
-      ordinate1<-enriched_data$km_h_rgt
-      ordinate2<-enriched_data$veh_h_rgt
-    }
-
-    # Calculate max values once
-    max_abscissa <- max(abscissa, na.rm = TRUE)
-    max_ordinate1 <- max(ordinate1, na.rm = TRUE)
-    max_ordinate2 <- max(ordinate2, na.rm = TRUE)
-
-    # Calculate the intersection between the lines
-    x_inter <- (list_final_2$b - list_final_1$b) / (list_final_1$a - list_final_2$a)
-    y_inter_1 <- list_final_1$a * x_inter + list_final_1$b
-    y_inter_2 <- list_final_1$a * x_inter * x_inter + list_final_1$b * x_inter
-
-    x_lim_1 <- -list_final_2$b / list_final_2$a
-    x_lim_2 <- x_lim_1 / 2
-    y_lim_2 <- list_final_2$a * x_lim_2 * x_lim_2 + list_final_2$b * x_lim_2
-
-    # Plot the fundamental diagram and its envelope
-    graphique <- list(linear = NULL, parabolic = NULL)
-
-    # Speed-density plot
-    graphique$linear <- ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1)) +
-      geom_point(pch = 20, na.rm = TRUE) +
-      labs(x = 'Density (veh/km)', y = 'Speed (km/h)',
-           title = paste('Segment:', enriched_data$segment_fullname[1])) +
-      geom_line(aes(y = list_final_1$a * abscissa + list_final_1$b), color = 'red', na.rm = TRUE) +
-      geom_line(aes(y = list_final_2$a * abscissa + list_final_2$b), color = 'blue', na.rm = TRUE) +
-      annotate("point", x = x_inter, y = y_inter_1, shape = 15, color = "orange", size = 3) +
-      annotate("text", x = x_inter, y = y_inter_1, hjust = -1,
-               label = paste("x =", sprintf("%.2f", x_inter))) +
-      annotate("point", x = x_lim_1, y = 0, shape = 15, color = "orange", size = 3) +
-      annotate("text", x = x_lim_1, y = 0, hjust = 1.5,
-               label = paste("x =", sprintf("%.2f", x_lim_1))) +
-      coord_cartesian(xlim = c(0, x_lim_1), ylim = c(0, max_ordinate1))
-
-    # Flow-density plot
-    graphique$parabolic <- ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2)) +
-      geom_point(pch = 20, na.rm = TRUE) +
-      labs(x = 'Density (veh/km)', y = 'Flow (veh/h)',
-           title = paste('Segment:', enriched_data$segment_fullname[1])) +
-      geom_line(aes(y = list_final_1$a * abscissa^2 + list_final_1$b * abscissa), color = 'red', na.rm = TRUE) +
-      geom_line(aes(y = list_final_2$a * abscissa^2 + list_final_2$b * abscissa), color = 'blue', na.rm = TRUE) +
-      annotate("point", x = x_inter, y = y_inter_2, shape = 15, color = "orange", size = 3) +
-      annotate("text", x = x_inter, y = y_inter_2, hjust = 1.5,
-               label = paste("y =", sprintf("%.2f", y_inter_2))) +
-      annotate("point", x = x_lim_2, y = y_lim_2, shape = 15, color = "orange", size = 3) +
-      annotate("text", x = x_lim_2, y = y_lim_2, hjust = -0.5,
-               label = paste("y =", sprintf("%.2f", y_lim_2))) +
-      coord_cartesian(xlim = c(0, max_abscissa), ylim = c(0, max_ordinate2))
-
-    return(graphique)
+    abscissa<-enriched_data$veh_km
+    print(max(abscissa))
+    ordinate1<-enriched_data$km_h
+    print(max(ordinate1))
+    ordinate2<-enriched_data$veh_h
+    print(max(ordinate2))
   }
+
+  else if(direction_choice=='lft')
+  {
+    abscissa<-enriched_data$veh_km_lft
+    ordinate1<-enriched_data$km_h_lft
+    ordinate2<-enriched_data$veh_h_lft
+  }
+
+  else
+  {
+    abscissa<-enriched_data$veh_km_rgt
+    ordinate1<-enriched_data$km_h_rgt
+    ordinate2<-enriched_data$veh_h_rgt
+  }
+
+  # Calculate the intersection between the lines
+  x_inter<-(list_final_2$b - list_final_1$b)/(list_final_1$a - list_final_2$a)
+  y_inter_1 <- list_final_1$a * x_inter + list_final_1$b
+  y_inter_2 <- list_final_1$a * x_inter*x_inter + list_final_1$b*x_inter
+
+  x_lim_1<--list_final_2$b/list_final_2$a
+  x_lim_2<-x_lim_1/2
+  y_lim_2<- list_final_2$a * x_lim_2*x_lim_2+ list_final_2$b*x_lim_2
+
+  #Plot the fundamental diagram and its envelope
+  graphique<-list(linear=NULL,parabolic=NULL)
+
+  graphique$linear<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1)) +
+    geom_point(pch = 20,na.rm = TRUE) +
+    labs(x = 'Density (veh/km)', y = 'Speed (km/h)', title = paste('Segment :', enriched_data$segment_fullname[1]))+
+    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa+list_final_1$b),color='red',na.rm = TRUE)+
+    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa+list_final_2$b),color='blue',na.rm = TRUE)+
+
+    annotate("point",x = x_inter, y = y_inter_1,shape=15, color = "orange", size = 3) +
+    annotate("text",x = x_inter, y = y_inter_1, hjust=-1,label = paste("x =", sprintf("%.2f", x_inter)))+
+
+    annotate("point",x = x_lim_1, y = 0,shape=15, color = "orange", size = 3) +
+    annotate("text",x = x_lim_1, y = 0,hjust=1.5, label = paste("x =", sprintf("%.2f", x_lim_1)))+
+
+    coord_cartesian(xlim =c(0, x_lim_1), ylim = c(0, max(ordinate1, na.rm = TRUE)))
+
+
+  #Plot the other one
+  graphique$parabolic<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2)) +
+    geom_point(pch = 20,na.rm = TRUE) +
+    labs(x = 'Density (veh/km)', y = 'Flow (veh/h)', title = paste('Segment :', enriched_data$segment_fullname[1]))+
+    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa*abscissa+list_final_1$b*abscissa),color='red',na.rm = TRUE)+
+    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa*abscissa+list_final_2$b*abscissa),color='blue',na.rm = TRUE)+
+
+    annotate("point",x = x_inter, y = y_inter_2,shape=15, color = "orange", size = 3) +
+    annotate("text",x = x_inter, y = y_inter_2,hjust=1.5, label = paste("y =", sprintf("%.2f", y_inter_2)))+
+
+    annotate("point",x = x_lim_2, y = y_lim_2,shape=15, color = "orange", size = 3) +
+    annotate("text",x = x_lim_2, y = y_lim_2,hjust=-0.5, label = paste("y =", sprintf("%.2f", y_lim_2)))+
+
+    coord_cartesian(xlim =c(0, max(abscissa, na.rm = TRUE)), ylim = c(0, max(ordinate2, na.rm = TRUE)))
+
+  return(graphique)
+}
 
 
 #' Restore the v85 by direction from speed_hist_car
@@ -778,11 +772,14 @@ restore_v85<-function(enriched_data,direction_choice)
 
 retrieve_missing_data<- function(enriched_data,
                                  date_range = NULL,
-                                 segments ,
+                                 segments = NULL,
                                  uptime_choice=0.5,
                                  successive_day=2,
                                  retrieve_data=TRUE)
 {
+
+  if(!is.null(segments))
+  {enriched_data<-enriched_data[enriched_data$segment_id==segments,]}
 
   if(!is.null(date_range))
   {enriched_data<-enriched_data[enriched_data$day>=date_range[1] & enriched_data$day<= date_range[2],]}
