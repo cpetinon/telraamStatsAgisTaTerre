@@ -440,10 +440,12 @@ filter_demand_user<-function (enriched_data,
   if(!is.null(vacation_choice))
   {
     if(vacation_choice==FALSE || vacation_choice=="NO")
-    {enriched_data<-enriched_data[enriched_data$vacation!='no vacation',]}
+    {enriched_data<-enriched_data[enriched_data$vacation=='no vacation',]}
 
     else if(vacation_choice==TRUE || vacation_choice=="ONLY")
-    {enriched_data<-enriched_data[enriched_data$vacation=='no vacation',]}
+    {enriched_data<-enriched_data[enriched_data$vacation!='no vacation',]}
+
+    else { enriched_data = enriched_data}
   }
 
   if(!is.null(holiday_choice))
@@ -453,6 +455,8 @@ filter_demand_user<-function (enriched_data,
 
 else if(holiday_choice==TRUE || holiday_choice=="ONLY")
 {enriched_data<-enriched_data[enriched_data$holiday_choice=='TRUE',]}
+
+    else { enriched_data = enriched_data}
   }
 
   enriched_data$weekend<-ifelse(enriched_data$weekday %in% c('saturday','sunday'), "Weekend", "Week")
