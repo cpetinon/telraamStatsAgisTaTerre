@@ -557,9 +557,7 @@ plot_diagram_envelope <- function (enriched_data,
                           list_final_1,
                           list_final_2,
                           direction_choice)
-
-    plot(graphique$linear)
-    plot(graphique$parabolic)
+    return(list(lineaire = graphique$linear, parabolique = graphique$parabolic))
   }
 }
 
