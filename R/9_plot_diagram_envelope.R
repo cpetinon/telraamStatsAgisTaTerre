@@ -439,15 +439,21 @@ filter_demand_user<-function (enriched_data,
 
   if(!is.null(vacation_choice))
   {
-    if(vacation_choice==FALSE)
+    if(vacation_choice==FALSE || vacation_choice=="NO"))
     {enriched_data<-enriched_data[enriched_data$vacation!='no vacation',]}
 
-    else
+    else if(vacation_choice==TRUE || vacation_choice=="YES")
     {enriched_data<-enriched_data[enriched_data$vacation=='no vacation',]}
   }
 
   if(!is.null(holiday_choice))
-  {enriched_data<-enriched_data %>% filter(holiday %in% holiday_choice)}
+  {
+    if(holiday_choice==FALSE || holiday_choice=="NO"))
+{enriched_data<-enriched_data[enriched_data$holiday_choice!='TRUE',]}
+
+else if(holiday_choice==TRUE || holiday_choice=="YES")
+{enriched_data<-enriched_data[enriched_data$holiday_choice=='TRUE',]}
+  }
 
   enriched_data$weekend<-ifelse(enriched_data$weekday %in% c('saturday','sunday'), "Weekend", "Week")
   return(enriched_data)
@@ -557,6 +563,7 @@ plot_diagram_envelope <- function (enriched_data,
                           list_final_1,
                           list_final_2,
                           direction_choice)
+
     return(list(lineaire = graphique$linear, parabolique = graphique$parabolic))
   }
 }
@@ -595,7 +602,7 @@ plot_lines <- function (enriched_data,
   if(!("speed_hist_car_lft" %in% colnames(enriched_data)) || is.null(direction_choice))
   {
     abscissa<-enriched_data$veh_km
-    print(sum(is.na(abscissa)))
+    print(max(abscissa))
     ordinate1<-enriched_data$km_h
     print(max(ordinate1))
     ordinate2<-enriched_data$veh_h
