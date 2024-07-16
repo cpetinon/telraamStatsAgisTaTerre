@@ -453,6 +453,17 @@ filter_demand_user <- function(enriched_data,
 
   }
 
+  if(!is.null(weekday_choice))
+  {day_to_number <- c("sunday" = 1, "monday" = 2, "tuesday" = 3, "wednesday" = 4,
+                      "thursday" = 5, "friday" = 6, "saturday" = 7)
+
+  enriched_data <- enriched_data %>%
+    mutate(weekday_num = day_to_number[weekday]) %>% filter(weekday_num %in% weekday_choice)
+  }
+
+  if(!is.null(hour_choice))
+  {enriched_data<-enriched_data %>% filter(hour %in% hour_choice)}
+
   return(enriched_data)
 }
 
