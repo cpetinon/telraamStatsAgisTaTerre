@@ -49,6 +49,8 @@ create_config <- function(segments = list("segment-01"="9000000000",
 create_config(create_directory = TRUE)
 ```
 
+
+
 ```{r}
 token = 'DufxnmDyaJ21hntBCa2u04vC59Azc6Eu8meaHe8B'
 
@@ -147,8 +149,22 @@ RueRandonneurs_23 = telraamStats::retrieve_sensor(segment_name ="RueRandonneurs-
 
 
 
+devtools::install_github("https://github.com/cpetinon/telraamStatsAgisTaTerre/tree/K_modif", force = TRUE)
 
-
-#plot_diagram_envelope(Burel_01)
+plot_diagram_envelope(Burel_01)
+plot_diagram_envelope(enriched_data = Burel_01, date_range = c("2022-05-01", "2023-06-30"), vacation_choice = "NO")
+plot_diagram_envelope(enriched_data = Burel_01, date_range = c("2022-05-01", "2023-06-30"), vacation_choice = "FALSE")$parabolique
 ```
+
+
+
+
+
+
+
+
+
+
+
+
 
