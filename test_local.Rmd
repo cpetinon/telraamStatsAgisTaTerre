@@ -55,97 +55,122 @@ create_config(create_directory = TRUE)
 token = 'DufxnmDyaJ21hntBCa2u04vC59Azc6Eu8meaHe8B'
 
 Burel_01 = telraamStats::retrieve_sensor(segment_name ="Burel-01", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 Leclerc_02 = telraamStats::retrieve_sensor(segment_name ="Leclerc-02", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 ParisMarche_03 = telraamStats::retrieve_sensor(segment_name ="ParisMarche-03", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 rueVignes_04 = telraamStats::retrieve_sensor(segment_name ="rueVignes-04", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 ParisArcEnCiel_05 = telraamStats::retrieve_sensor(segment_name ="ParisArcEnCiel-05", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RteVitre_06 = telraamStats::retrieve_sensor(segment_name ="RteVitre-06", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RueGdDomaine_07 = telraamStats::retrieve_sensor(segment_name ="RueGdDomaine-07", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 StDidierNord_08 = telraamStats::retrieve_sensor(segment_name ="StDidierNord-08", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 rueVallee_09 = telraamStats::retrieve_sensor(segment_name ="rueVallee-09", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 StDidierSud_10 = telraamStats::retrieve_sensor(segment_name ="StDidierSud-10", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RuePrieure_11 = telraamStats::retrieve_sensor(segment_name ="RuePrieure-11", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RueCottage_12 = telraamStats::retrieve_sensor(segment_name ="RueCottage-12", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RueVeronniere_13 = telraamStats::retrieve_sensor(segment_name ="RueVeronniere-13", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RueDesEcoles_14 = telraamStats::retrieve_sensor(segment_name ="RueDesEcoles-14", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RueManoirs_15 = telraamStats::retrieve_sensor(segment_name ="RueManoirs-15", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RueToursCarree_16 = telraamStats::retrieve_sensor(segment_name ="RueToursCarree-16", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 PlaceHotelDeVille_17 = telraamStats::retrieve_sensor(segment_name ="PlaceHotelDeVille-17", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 BoulevardLiberte_18 = telraamStats::retrieve_sensor(segment_name ="BoulevardLiberte-18", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 AvenueDesPlatanes_19 = telraamStats::retrieve_sensor(segment_name ="AvenueDesPlatanes-19", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
-#BoulevardLeannec1_20 = telraamStats::retrieve_sensor(segment_name ="BoulevardLeannec1-20", 
-           #                 start_date = as.Date('2022-05-01'), 
-            #                end_date = as.Date('2024-06-30'), key = token)
-rm(BoulevardLeannec1_20)
+BoulevardLeannec1_20 = telraamStats::retrieve_sensor(segment_name ="BoulevardLeannec1-20", 
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
+
 BoulevardLeannec2_21 = telraamStats::retrieve_sensor(segment_name ="BoulevardLeannec2-21", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RuePasteur_22 = telraamStats::retrieve_sensor(segment_name ="RuePasteur-22", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
 RueRandonneurs_23 = telraamStats::retrieve_sensor(segment_name ="RueRandonneurs-23", 
-                            start_date = as.Date('2022-05-01'), 
-                            end_date = as.Date('2024-06-30'), key = token)
+                            start_date = as.Date('2022-01-01'), 
+                            end_date = as.Date('2024-07-14'), key = token)
 
+
+# sauvegarder toutes les données individuellement dans un fichier data en format RData
+save(Burel_01, file = "data/Burel-01.RData")
+save(Leclerc_02, file = "data/Leclerc-02.RData")
+save(ParisMarche_03, file = "data/ParisMarche-03.RData")
+save(rueVignes_04, file = "data/rueVignes-04.RData")
+save(ParisArcEnCiel_05, file = "data/ParisArcEnCiel-05.RData")
+save(RteVitre_06, file = "data/RteVitre-06.RData")
+save(RueGdDomaine_07, file = "data/RueGdDomaine-07.RData")
+save(StDidierNord_08, file = "data/StDidierNord-08.RData")
+save(rueVallee_09, file = "data/rueVallee-09.RData")
+save(StDidierSud_10, file = "data/StDidierSud-10.RData")
+save(RuePrieure_11, file = "data/RuePrieure-11.RData")
+save(RueCottage_12, file = "data/RueCottage-12.RData")
+save(RueVeronniere_13, file = "data/RueVeronniere-13.RData")
+save(RueDesEcoles_14, file = "data/RueDesEcoles-14.RData")
+save(RueManoirs_15, file = "data/RueManoirs-15.RData")
+save(RueToursCarree_16, file = "data/RueToursCarree-16.RData")
+save(PlaceHotelDeVille_17, file = "data/PlaceHotelDeVille-17.RData")
+save(BoulevardLiberte_18, file = "data/BoulevardLiberte-18.RData")
+save(AvenueDesPlatanes_19, file = "data/AvenueDesPlatanes-19.RData")
+save(BoulevardLeannec1_20, file = "data/BoulevardLeannec1-20.RData")
+save(BoulevardLeannec2_21, file = "data/BoulevardLeannec2-21.RData")
+save(RuePasteur_22, file = "data/RuePasteur-22.RData")
+save(RueRandonneurs_23, file = "data/RueRandonneurs-23.RData")
 
 
 

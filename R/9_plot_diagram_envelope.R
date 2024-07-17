@@ -114,7 +114,7 @@ calculate_characteristic<- function (enriched_data,
 #'
 #' @examples
 #' calculate_data_dimensionless(traffic,
-#'   direction_choice='lft,
+#'   direction_choice='lft',
 #'   list_charac=calculate_characteristic(traffic))
 
 
@@ -392,11 +392,11 @@ create_necessary_column <- function (enriched_data,direction_choice=NULL)
 #'
 #' @param enriched_data enriched data.frame containing all the data for all your sensors
 #' @param date_range Date vector. example: c('2021-01-01','2022-01-01'). Full period if NULL (default).
-#' @param segments Character vector. Selected road segment, all if NULL (default).
-#' @param weekday_choice weekday Character vector. Weekday choosen. Default to the all week.
+#' @param segments  character, id of the sensor you want to study between quotes. Example: 9000002156, all if NULL (default).
+#' @param weekday_choice integer vector. Weekday choosen. Example: 1 for monday etc. Default to the all week.
 #' @param hour_choice Integer vector. Hours choosen, default to the all day.
-#' @param vacation_choice Character vector. Selected vacation. Full period by default (NULL).
-#' @param holiday_choise Boolean. Selected holiday.  Full period by default (NULL).
+#' @param vacation_choice character, "YES" to keep, "NO" to filter out, or "ONLY" to only take vacation in the database
+#' @param holiday_choise character, "YES" to keep, "NO" to filter out, or "ONLY" to only take public holidays in the database
 #'
 #' @return enriched_data
 #' @export
@@ -475,12 +475,12 @@ filter_demand_user <- function(enriched_data,
 #'
 #' @param enriched_data enriched data.frame containing all the data for all your sensors
 #' @param date_range Date vector. example: c('2021-01-01','2022-01-01'). Full period if NULL (default).
-#' @param segments Character vector. Selected road segment, all if NULL (default).
-#' @param weekday_choice weekday Character vector. Weekday choosen. Default to the all week.
+#' @param segments  character, id of the sensor you want to study between quotes. Example: 9000002156, all if NULL (default).
+#' @param weekday_choice integer vector. Weekday choosen. Example: 1 for monday etc. Default to the all week.
 #' @param hour_choice Integer vector. Hours choosen, default to the all day.
-#' @param vacation_choice Character vector. Selected vacation. Full period by default (NULL).
-#' @param holiday_choise Boolean. Selected holiday.  Full period by default (NULL).
-#' @param direction_choice Character Direction choosen. Default to NULL.
+#' @param vacation_choice character, "YES" to keep, "NO" to filter out, or "ONLY" to only take vacation in the database
+#' @param holiday_choise character, "YES" to keep, "NO" to filter out, or "ONLY" to only take public holidays in the database
+#' @param direction_choice character, " " for all, "rgt" for right (B to A), "lft" for left (A to B)
 #' @param NumberOfSlope Integer. Number of slope tested. Default to 50.
 #' @param NumberOfOrdinate Integer. Number of ordinate tested. Default to 45.
 #'
@@ -496,11 +496,11 @@ filter_demand_user <- function(enriched_data,
 #' plot_diagram_envelope(traffic)
 #' plot_diagram_envelope(traffic,
 #'   date_range = c('2022-07-01','2022-09-01'),
-#'   weekday_choice= c('monday','friday','sunday),
+#'   weekday_choice= c(1,2,3),
 #'   hour_choice= c(1,5,10,14,21),
 #'   vacation_choice=NULL,
 #'   holiday_choice=TRUE,
-#'   segments = 'RteVitre-06',
+#'   segments = 9000002156,
 #'   NumberOfSlope=60,
 #'   NumberOfOrdinate=65,
 #'   direction_choice='lft)
