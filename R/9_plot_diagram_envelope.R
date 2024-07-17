@@ -12,28 +12,39 @@
 #' @examples
 #' calculate_axes(traffic)
 
-calculate_axes<-function(enriched_data)
+calculate_axes<-function(enriched_data,direction_choice=NULL)
 {
-  enriched_data$veh_h<-enriched_data$car
-  enriched_data$km_h<-enriched_data$v85
-  enriched_data$veh_km<-0
-  for(i in 1:length(enriched_data$veh_km))
-  {enriched_data$veh_km[i]<-enriched_data$veh_h[i]/enriched_data$km_h[i]}
+  if(!("speed_hist_car_lft" %in% colnames(enriched_data)) || is.null(direction_choice))
+  {
+    enriched_data$veh_h<-enriched_data$car
+    enriched_data$km_h<-enriched_data$v85
+    enriched_data$veh_km<-0
+    for(i in 1:length(enriched_data$veh_km))
+    {enriched_data$veh_km[i]<-enriched_data$veh_h[i]/enriched_data$km_h[i]}
+  }
 
 
-  if("speed_hist_car_lft" %in% colnames(enriched_data))
+
+  else if(direction_choice=='lft')
   {
     enriched_data$veh_h_lft<-enriched_data$car_lft*4
     enriched_data$km_h_lft<-enriched_data$v85_lft
     enriched_data$veh_km_lft<-0
 
+    for(i in 1:length(enriched_data$car))
+    {
+      enriched_data$veh_km_lft[i]<-enriched_data$veh_h_lft[i]/enriched_data$km_h_lft[i]
+    }
+  }
+
+  else
+  {
     enriched_data$veh_h_rgt<-enriched_data$car_rgt*4
     enriched_data$km_h_rgt<-enriched_data$v85_rgt
     enriched_data$veh_km_rgt<-0
 
     for(i in 1:length(enriched_data$car))
     {
-      enriched_data$veh_km_lft[i]<-enriched_data$veh_h_lft[i]/enriched_data$km_h_lft[i]
       enriched_data$veh_km_rgt[i]<-enriched_data$veh_h_rgt[i]/enriched_data$km_h_rgt[i]
     }
   }
@@ -59,7 +70,8 @@ calculate_axes<-function(enriched_data)
 #' calculate_characteristic(traffic,
 #'   direction_choice='lft')
 
-calculate_characteristic<- function (enriched_data, direction_choice=NULL)
+calculate_characteristic<- function (enriched_data,
+                                     direction_choice=NULL)
 {
   if(is.null(direction_choice) || !("speed_hist_car_lft" %in% colnames(enriched_data)))
   {
@@ -219,7 +231,7 @@ calculate_necessary_data <- function (enriched_data,
                                       ordinate,
                                       direction_choice=NULL,
                                       percent1=95,
-                                      percent2=98)
+                                      percent2=99)
 {
   percent<-percent1
 
@@ -361,14 +373,14 @@ count_point<-function(enriched_data,
 #' @examples
 #' create_necessary_column(traffic)
 
-create_necessary_column <- function (enriched_data)
+create_necessary_column <- function (enriched_data,direction_choice=NULL)
 {
   if("speed_hist_car_lft" %in% colnames(enriched_data))
   {enriched_data<-restore_v85(enriched_data)}
 
   enriched_data<-retrieve_missing_data(enriched_data)
 
-  enriched_data<-calculate_axes(enriched_data)
+  enriched_data<-calculate_axes(enriched_data,direction_choice)
 
   return(enriched_data)
 }
@@ -402,42 +414,56 @@ create_necessary_column <- function (enriched_data)
 #'  holiday_choice=TRUE,
 #'  segments = 'RteVitre-06')
 
-filter_demand_user<-function (enriched_data,
-                              segments=NULL,
-                              date_range=NULL,
-                              weekday_choice=NULL,
-                              hour_choice=NULL,
-                              vacation_choice=NULL,
-                              holiday_choice=NULL)
-{
-  if(!is.null(segments))
-  {enriched_data<-enriched_data %>% filter(segment_id %in% segments)}
+filter_demand_user <- function(enriched_data,
+                               segments = NULL,
+                               date_range = NULL,
+                               weekday_choice = NULL,
+                               hour_choice = NULL,
+                               vacation_choice = NULL,
+                               holiday_choice = NULL) {
 
-  if(!is.null(date_range))
-  {enriched_data<-enriched_data[enriched_data$day>=date_range[1] & enriched_data$day<= date_range[2],]}
 
-  enriched_data$weekday<-tolower(enriched_data$weekday)
-  tolower(weekday_choice)
+  if (!is.null(segments)) {
+    enriched_data <- enriched_data %>% filter(segment_id %in% segments)
+
+  }
+
+  if (!is.null(date_range)) {
+    enriched_data <- enriched_data %>% filter(day >= date_range[1] & day <= date_range[2])
+
+  }
+
+  if (!is.null(vacation_choice)) {
+
+    if (vacation_choice == "NO") {
+      enriched_data <- enriched_data %>% filter(vacation %in% "No vacation")
+    } else if (vacation_choice == "ONLY") {
+      enriched_data <- enriched_data %>% filter(!vacation %in% "No vacation")
+    }
+
+  }
+
+  if (!is.null(holiday_choice)) {
+
+    if (holiday_choice == "NO") {
+      enriched_data <- enriched_data %>% filter(!holiday)
+    } else if (holiday_choice == "ONLY") {
+      enriched_data <- enriched_data %>% filter(holiday)
+    }
+
+  }
 
   if(!is.null(weekday_choice))
-  { enriched_data<-enriched_data %>% filter(weekday %in% weekday_choice)}
+  {day_to_number <- c("sunday" = 1, "monday" = 2, "tuesday" = 3, "wednesday" = 4,
+                      "thursday" = 5, "friday" = 6, "saturday" = 7)
+
+  enriched_data <- enriched_data %>%
+    mutate(weekday_num = day_to_number[weekday]) %>% filter(weekday_num %in% weekday_choice)
+  }
 
   if(!is.null(hour_choice))
   {enriched_data<-enriched_data %>% filter(hour %in% hour_choice)}
 
-  if(!is.null(vacation_choice))
-  {
-    if(vacation_choice==FALSE || vacation_choice=="NO")
-    {enriched_data<-enriched_data[enriched_data$vacation!='no vacation',]}
-
-    else
-    {enriched_data<-enriched_data[enriched_data$vacation=='no vacation',]}
-  }
-
-  if(!is.null(holiday_choice))
-  {enriched_data<-enriched_data %>% filter(holiday %in% holiday_choice)}
-
-  enriched_data$weekend<-ifelse(enriched_data$weekday %in% c('saturday','sunday'), "Weekend", "Week")
   return(enriched_data)
 }
 
@@ -480,77 +506,72 @@ filter_demand_user<-function (enriched_data,
 #'   direction_choice='lft)
 
 
-plot_diagram_envelope <- function (enriched_data,
-                                   date_range = NULL,
-                                   weekday_choice = NULL,
-                                   hour_choice = NULL,
-                                   vacation_choice=NULL,
-                                   holiday_choice=NULL,
-                                   segments = NULL,
-                                   direction_choice=NULL,
-                                   NumberOfSlope=50,
-                                   NumberOfOrdinate=45,
-                                   percent1=c(95,99),
-                                   percent2=c(95,99))
-{ start = Sys.time()
-  enriched_data<-filter_demand_user(enriched_data,
-                                    segments,
-                                    date_range,
-                                    weekday_choice,
-                                    hour_choice,
-                                    vacation_choice,
-                                    holiday_choice)
 
-  id_seg<-unique(enriched_data$segment_id)
+plot_diagram_envelope <- function(enriched_data,
+                                  segment,
+                                  date_range = NULL,
+                                  weekday_choice = NULL,
+                                  hour_choice = NULL,
+                                  vacation_choice = NULL,
+                                  holiday_choice = NULL,
+                                  direction_choice = NULL,
+                                  NumberOfSlope = 50,
+                                  NumberOfOrdinate = 45,
+                                  percent1 = c(95, 99),
+                                  percent2 = c(95, 99)) {
 
-  #Plot the fundamental diagram for each sensor
-  for (id in id_seg)
-  {
-    df<-enriched_data[enriched_data$segment_id==id,]
-
-    df<-create_necessary_column(df)
-    list_charac<-calculate_characteristic(df ,
-                                          direction_choice)
-    df<-calculate_data_dimensionless(df,
-                                     direction_choice,
-                                     list_charac)
-
-    list_final_1<-calculate_necessary_data(df,
-                                           NumberOfSlope,
-                                           NumberOfOrdinate,
-                                           slope=c(-2,-0.1),
-                                           ordinate=c(1,7),
-                                           direction_choice,
-                                           percent1=percent1[1],
-                                           percent2=percent1[2])
-
-    list_final_2<-calculate_necessary_data(df,
-                                           NumberOfSlope,
-                                           NumberOfOrdinate,
-                                           slope=c(-6,list_final_1$a),
-                                           ordinate=c(list_final_1$b,8*list_final_1$b),
-                                           direction_choice,
-                                           percent1=percent2[1],
-                                           percent2=percent2[2])
-
-    # Repasser en données dimensionnées
-    list_final_1$a<-list_charac$speed*list_final_1$a/list_charac$density
-    list_final_1$b<-list_charac$speed*list_final_1$b
-
-    list_final_2$a<-list_charac$speed*list_final_2$a/list_charac$density
-    list_final_2$b<-list_charac$speed*list_final_2$b
-
-    # Affiche le diagramme et les droites
-    graphique<-plot_lines(df,
-                          list_final_1,
-                          list_final_2,
-                          direction_choice)
-    result = list(lineaire=graphique$linear,parabolique=graphique$parabolic)
-
-    end = Sys.time()
-    print(end-start)
-    return(result)
+  # Check if segment is provided
+  if (missing(segment) || is.null(segment)) {
+    stop("A segment must be specified.")
   }
+
+  # Filter data for the specified segment
+  enriched_data <- filter_demand_user(enriched_data,
+                                      segments = segment,
+                                      date_range = date_range,
+                                      weekday_choice = weekday_choice,
+                                      hour_choice = hour_choice,
+                                      vacation_choice = vacation_choice,
+                                      holiday_choice = holiday_choice)
+
+  # Check if the specified segment exists in the filtered data
+  if (nrow(enriched_data) == 0) {
+    stop("No data available for the specified segment and filters.")
+  }
+
+  df <- create_necessary_column(enriched_data, direction_choice)
+  list_charac <- calculate_characteristic(df, direction_choice)
+  df <- calculate_data_dimensionless(df, direction_choice, list_charac)
+
+  list_final_1 <- calculate_necessary_data(df,
+                                           NumberOfSlope,
+                                           NumberOfOrdinate,
+                                           slope = c(-2, -0.1),
+                                           ordinate = c(1, 7),
+                                           direction_choice,
+                                           percent1 = percent1[1],
+                                           percent2 = percent1[2])
+
+  list_final_2 <- calculate_necessary_data(df,
+                                           NumberOfSlope,
+                                           NumberOfOrdinate,
+                                           slope = c(-6, list_final_1$a),
+                                           ordinate = c(list_final_1$b, 8 * list_final_1$b),
+                                           direction_choice,
+                                           percent1 = percent2[1],
+                                           percent2 = percent2[2])
+
+  # Convert back to dimensional data
+  list_final_1$a <- list_charac$speed * list_final_1$a / list_charac$density
+  list_final_1$b <- list_charac$speed * list_final_1$b
+
+  list_final_2$a <- list_charac$speed * list_final_2$a / list_charac$density
+  list_final_2$b <- list_charac$speed * list_final_2$b
+
+  # Plot the diagram and lines
+  graphique <- plot_lines(df, list_final_1, list_final_2, direction_choice)
+
+  return(list(linear = graphique$linear, parabolic = graphique$parabolic))
 }
 
 
@@ -587,8 +608,11 @@ plot_lines <- function (enriched_data,
   if(!("speed_hist_car_lft" %in% colnames(enriched_data)) || is.null(direction_choice))
   {
     abscissa<-enriched_data$veh_km
+    print(max(abscissa))
     ordinate1<-enriched_data$km_h
+    print(max(ordinate1))
     ordinate2<-enriched_data$veh_h
+    print(max(ordinate2))
   }
 
   else if(direction_choice=='lft')
@@ -617,6 +641,7 @@ plot_lines <- function (enriched_data,
   #Plot the fundamental diagram and its envelope
   graphique<-list(linear=NULL,parabolic=NULL)
 
+<<<<<<< HEAD
   graphique$linear <- ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1)) +
     geom_point(pch = 20, na.rm = TRUE) +
     labs(x = 'Density (veh/km)', y = 'Speed (km/h)', title = paste('Segment :', enriched_data$segment_fullname[1])) +
@@ -640,6 +665,37 @@ plot_lines <- function (enriched_data,
     annotate("point", x = x_lim_2, y = y_lim_2, shape = 15, color = "orange", size = 3) +
     annotate("text", x = x_lim_2, y = y_lim_2, hjust = -0.5, label = paste("y =", sprintf("%.2f", y_lim_2)))+
     coord_cartesian(xlim = c(0, max(abscissa,na.rm=TRUE)), ylim = c(0, y_lim_2))
+=======
+  graphique$linear<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate1)) +
+    geom_point(pch = 20,na.rm = TRUE) +
+    labs(x = 'Density (veh/km)', y = 'Speed (km/h)', title = paste('Segment :', enriched_data$segment_fullname[1]))+
+    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa+list_final_1$b),color='red',na.rm = TRUE)+
+    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa+list_final_2$b),color='blue',na.rm = TRUE)+
+
+    annotate("point",x = x_inter, y = y_inter_1,shape=15, color = "orange", size = 3) +
+    annotate("text",x = x_inter, y = y_inter_1, hjust=-1,label = paste("x =", sprintf("%.2f", x_inter)))+
+
+    annotate("point",x = x_lim_1, y = 0,shape=15, color = "orange", size = 3) +
+    annotate("text",x = x_lim_1, y = 0,hjust=1.5, label = paste("x =", sprintf("%.2f", x_lim_1)))+
+
+    coord_cartesian(xlim =c(0, x_lim_1), ylim = c(0, max(ordinate1, na.rm = TRUE)))
+
+
+  #Plot the other one
+  graphique$parabolic<-ggplot(data = enriched_data, mapping = aes(x = abscissa, y = ordinate2)) +
+    geom_point(pch = 20,na.rm = TRUE) +
+    labs(x = 'Density (veh/km)', y = 'Flow (veh/h)', title = paste('Segment :', enriched_data$segment_fullname[1]))+
+    geom_line(mapping=aes(x=abscissa,y=list_final_1$a*abscissa*abscissa+list_final_1$b*abscissa),color='red',na.rm = TRUE)+
+    geom_line(mapping=aes(x=abscissa,y=list_final_2$a*abscissa*abscissa+list_final_2$b*abscissa),color='blue',na.rm = TRUE)+
+
+    annotate("point",x = x_inter, y = y_inter_2,shape=15, color = "orange", size = 3) +
+    annotate("text",x = x_inter, y = y_inter_2,hjust=1.5, label = paste("y =", sprintf("%.2f", y_inter_2)))+
+
+    annotate("point",x = x_lim_2, y = y_lim_2,shape=15, color = "orange", size = 3) +
+    annotate("text",x = x_lim_2, y = y_lim_2,hjust=-0.5, label = paste("y =", sprintf("%.2f", y_lim_2)))+
+
+    coord_cartesian(xlim =c(0, max(abscissa, na.rm = TRUE)), ylim = c(0, y_lim_2))
+>>>>>>> 7222f6e2acf284b8f8a2d4789f982501ea63ea8d
 
   return(graphique)
 }
@@ -658,52 +714,60 @@ plot_lines <- function (enriched_data,
 #' restore_v85(enriched_data)
 
 
-restore_v85<-function(enriched_data)
+restore_v85<-function(enriched_data,direction_choice)
 {
 
   speed<-seq(5,125,by=5)
 
 
-  enriched_data$v85_lft<-0
-  enriched_data$v85_rgt<-0
-
-  for (i in 1:length(enriched_data$car))
+  #Left
+  if(direction_choice=='lft')
   {
-    #Left
-    vec<-enriched_data$speed_hist_car_lft[i]
-    elements <- strsplit(vec, ",")[[1]]
-    elements[1]<- gsub("\\[", "", elements[1])
-    elements[25]<- gsub("\\]", "", elements[25])
-    vector <- as.numeric(elements)
-    per_vec <- sum(vector)
-    per_85 <- 0.85*per_vec
-    j<-1
-    sum<-0
-
-    while (sum<per_85 & j<length(vector))
+    enriched_data$v85_lft<-0
+    for (i in 1:length(enriched_data$car))
     {
-      sum<-sum+vector[j]
-      j<-j+1
+      vec<-enriched_data$speed_hist_car_lft[i]
+      elements <- strsplit(vec, ",")[[1]]
+      elements[1]<- gsub("\\[", "", elements[1])
+      elements[25]<- gsub("\\]", "", elements[25])
+      vector <- as.numeric(elements)
+      per_vec <- sum(vector)
+      per_85 <- 0.85*per_vec
+      j<-1
+      sum<-0
+
+      while (sum<per_85 & j<length(vector))
+      {
+        sum<-sum+vector[j]
+        j<-j+1
+      }
+      enriched_data$v85_lft[i]<-speed[j]
     }
-    enriched_data$v85_lft[i]<-speed[j]
+  }
 
-    #Right
-    vec<-enriched_data$speed_hist_car_rgt[i]
-    elements <- strsplit(vec, ",")[[1]]
-    elements[1]<- gsub("\\[", "", elements[1])
-    elements[25]<- gsub("\\]", "", elements[25])
-    vector <- as.numeric(elements)
-    per_vec <- sum(vector)
-    per_85 <- 0.85*per_vec
-    j<-1
-    sum<-0
-
-    while (sum<per_85 & j<length(vector))
+  #Rigth
+  else
+  {
+    enriched_data$v85_rgt<-0
+    for (i in 1:length(enriched_data$car))
     {
-      sum<-sum+vector[j]
-      j<-j+1
+      vec<-enriched_data$speed_hist_car_rgt[i]
+      elements <- strsplit(vec, ",")[[1]]
+      elements[1]<- gsub("\\[", "", elements[1])
+      elements[25]<- gsub("\\]", "", elements[25])
+      vector <- as.numeric(elements)
+      per_vec <- sum(vector)
+      per_85 <- 0.85*per_vec
+      j<-1
+      sum<-0
+
+      while (sum<per_85 & j<length(vector))
+      {
+        sum<-sum+vector[j]
+        j<-j+1
+      }
+      enriched_data$v85_rgt[i]<-speed[j]
     }
-    enriched_data$v85_rgt[i]<-speed[j]
   }
   return(enriched_data)
 }
@@ -791,7 +855,7 @@ retrieve_missing_hours<-function(enriched_data,
                                  ifelse(month(enriched_data$date) %in% c(6,7,8), "Summer",
                                         ifelse(month(enriched_data$date) %in% c(9,10,11), "Autumn", "Winter")))
 
-  df_season<-enriched_data %>% group_by(segment_id,season,hour) %>% summarise(condition=any(car!=0 & uptime>uptime_choice), .groups="keep")
+  df_season<-enriched_data %>% group_by(segment_id,season,hour) %>% summarise(condition=any(car!=0 & uptime>uptime_choice), .groups = "keep")
 
   enriched_data <- enriched_data %>% semi_join(df_season %>% filter(condition), by = c("segment_id","season", "hour"))
 
