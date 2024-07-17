@@ -658,7 +658,7 @@ plot_lines <- function (enriched_data,
     annotate("point",x = x_lim_2, y = y_lim_2,shape=15, color = "orange", size = 3) +
     annotate("text",x = x_lim_2, y = y_lim_2,hjust=-0.5, label = paste("y =", sprintf("%.2f", y_lim_2)))+
 
-    coord_cartesian(xlim =c(0, max(abscissa)), ylim = c(0, max(ordinate2, na.rm = TRUE)))
+    coord_cartesian(xlim =c(0, max(abscissa)), ylim = c(0, y_lim_2))
 
   return(graphique)
 }
