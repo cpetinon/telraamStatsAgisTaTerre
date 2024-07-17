@@ -625,8 +625,8 @@ plot_lines <- function (enriched_data,
     annotate("point", x = x_inter, y = y_inter_1, shape = 15, color = "orange", size = 3) +
     annotate("text", x = x_inter, y = y_inter_1, hjust = -0.5, label = paste("x =", sprintf("%.2f", x_inter))) +
     annotate("point", x = x_lim_1, y = 0, shape = 15, color = "orange", size = 3) +
-    annotate("text", x = x_lim_1, y = 0, hjust = 1.4, label = paste("x =", sprintf("%.2f", x_lim_1)))
-  #+  coord_cartesian(xlim = c(0, x_lim_1), ylim = c(0, max(ordinate1)))
+    annotate("text", x = x_lim_1, y = 0, hjust = 1.4, label = paste("x =", sprintf("%.2f", x_lim_1)))+
+    coord_cartesian(xlim = c(0, x_lim_1), ylim = c(0, max(ordinate1,na.rm = TRUE)))
 
 
   #Plot the other one
@@ -638,8 +638,8 @@ plot_lines <- function (enriched_data,
     annotate("point", x = x_inter, y = y_inter_2, shape = 15, color = "orange", size = 3) +
     annotate("text", x = x_inter, y = y_inter_2, hjust = 1.5, label = paste("y =", sprintf("%.2f", y_inter_2))) +
     annotate("point", x = x_lim_2, y = y_lim_2, shape = 15, color = "orange", size = 3) +
-    annotate("text", x = x_lim_2, y = y_lim_2, hjust = -0.5, label = paste("y =", sprintf("%.2f", y_lim_2)))
-  #+ coord_cartesian(xlim = c(0, max(abscissa)), ylim = c(0, max(ordinate2)))
+    annotate("text", x = x_lim_2, y = y_lim_2, hjust = -0.5, label = paste("y =", sprintf("%.2f", y_lim_2)))+
+    coord_cartesian(xlim = c(0, max(abscissa,na.rm=TRUE)), ylim = c(0, y_lim_2))
 
   return(graphique)
 }
