@@ -29,7 +29,7 @@ write_update_data_comp <- function(id_sensor, date1, date2,
                                    public_holidays = NULL
                                   ){
 
-  set_global_vars(vacations, public_holidays)
+ # set_global_vars(vacations, public_holidays)
 
   # retrieve file name
   sensor_name <- sensor_names[which(sensor_ids==id_sensor)]
@@ -43,6 +43,7 @@ write_update_data_comp <- function(id_sensor, date1, date2,
     # conversion from a numeric vector to a character string of car_speed_hist_0to70plus and car_speed_hist_0to120plus
     data_update$car_speed_hist_0to70plus <- sapply(data_update$car_speed_hist_0to70plus, function(x) paste(x, collapse = ", "))
     data_update$car_speed_hist_0to120plus <- sapply(data_update$car_speed_hist_0to120plus, function(x) paste(x, collapse = ", "))
+
   } else {
     # Preparation of the dataset
     data <- get(load(file_name))
@@ -58,37 +59,68 @@ write_update_data_comp <- function(id_sensor, date1, date2,
     new_data$car_speed_hist_0to70plus <- sapply(new_data$car_speed_hist_0to70plus, function(x) paste(x, collapse = ", "))
     new_data$car_speed_hist_0to120plus <- sapply(new_data$car_speed_hist_0to120plus, function(x) paste(x, collapse = ", "))
 
+     #If the extra columns are present in the old data, we remove them
+    if("imputed" %in% colnames(data_update)){
+      data_update <- data_update %>% select(-.data$imputed)
+    }
+    if("season" %in% colnames(data_update)){
+      data_update <- data_update %>% select(-.data$season)
+    }
+
     # data on which we are going to impute
     data_update <- rbind(data_update, new_data)
     data <- data %>% slice(1:(nrow(data)-806))
   }
   # retrieve public holidays
-  date_pub_hol <- filter_public_holidays(data_update, "ONLY") %>% select(date)
-  date_pub_hol <- date_pub_hol[[1]]
+ # date_pub_hol <- filter_public_holidays(data_update, "ONLY") %>% select(date)
+ #  date_pub_hol <- date_pub_hol[[1]]
 
   # retrieve vacations
-  date_hol <- filter_vacation(data_update, "ONLY") %>% select(date)
-  date_hol <- date_hol[[1]]
-  date_hol <- date_hol[!date_hol %in% date_pub_hol]
+  # date_hol <- filter_vacation(data_update, "ONLY") %>% select(date)
+  # date_hol <- date_hol[[1]]
+  # date_hol <- date_hol[!date_hol %in% date_pub_hol]
 
   # retrieve open days
-  date_od <- data_update %>% filter(!date %in% date_pub_hol & !date %in% date_hol) %>% select(date)
-  date_od <- date_od[[1]]
+  # date_od <- data_update %>% filter(!date %in% date_pub_hol & !date %in% date_hol) %>% select(date)
+ # date_od <- date_od[[1]]
 
   # impute for public_holidays
-  data_pub_hol <- imp_na(data_update, "public holidays")
-  data_pub_hol <- data_pub_hol %>% filter(date %in% date_pub_hol) %>% mutate(period = "public holidays")
+ # data_pub_hol <- imp_na(data_update, "public holidays")
+ # data_pub_hol <- data_pub_hol %>% filter(date %in% date_pub_hol) %>% mutate(period = "public holidays")
 
   # impute for vacations
-  data_hol <- imp_na(data_update, "holidays")
-  data_hol <- data_hol %>% filter(date %in% date_hol) %>% mutate(period = "holidays")
+ # data_hol <- imp_na(data_update, "holidays")
+ # data_hol <- data_hol %>% filter(date %in% date_hol) %>% mutate(period = "holidays")
 
   # impute for open days
-  data_od <- imp_na(data_update, "open days")
-  data_od <- data_od %>% filter(date %in% date_od) %>% mutate(period = "open days")
+ # data_od <- imp_na(data_update, "open days")
+ # data_od <- data_od %>% filter(date %in% date_od) %>% mutate(period = "open days")
 
   # retrieve complete data for the update
-  data_comp <- rbind(data_pub_hol, data_hol, data_od) %>% arrange(date)
+  # data_comp <- rbind(data_pub_hol, data_hol, data_od) %>% arrange(date)
+
+  #Preprocess Data before imputation
+  data_update_clean <- retrieve_missing_data(data_update,
+                                             threshold_uptime = 0.5,
+                                             successive_day = 2,
+                                             remove_data = TRUE,
+                                             show_graph = FALSE)
+
+  #Fine_tune the model before imputation
+  param_model <- fine_tune_impute_missing_data(data_update_clean, target_col="vehicle",
+                                            mtry_range = seq(1,10),
+                                            min_n_range = seq(1,5),
+                                            num_trees = 500,
+                                            threshold_uptime = 0.5)
+  best_param_model <- param_model$best_params
+
+  #Imputate the data
+  data_comp <- impute_missing_data(data_update_clean,
+             transport_type = "all",
+             threshold_uptime = 0.5,
+             min.node.size = best_param_model$min_n,
+             mtry = best_param_model$mtry,
+             num_trees = 500)
 
   # combine data (old and new)
 
@@ -103,3 +135,13 @@ write_update_data_comp <- function(id_sensor, date1, date2,
     save(data_comp, file = file_name)
   }
 }
+
+
+observe({
+  if(input$data_type == "original"){
+    data$data  <- data$data %>% filter(.data$imputed =="original")
+  }
+})
+
+
+

@@ -25,6 +25,7 @@ Imports:
     mgcv,
     purrr,
     rlang,
+    ranger,
     stringr,
     synchrony,
     tibble,

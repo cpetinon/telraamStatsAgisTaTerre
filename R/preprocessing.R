@@ -16,15 +16,6 @@
 #' @import dplyr
 #' @import lubridate
 #'
-#' @examples
-#' traffic_cleaned <- retrieve_missing_data(traffic)
-#' traffic_cleaned <- retrieve_missing_data(traffic,
-#'                                          date_range = c('2022-07-01','2022-09-01'),
-#'                                          segment_id = 9000001844,
-#'                                          threshold_uptime = 0.3,
-#'                                          successive_day = 1,
-#'                                          remove_data = FALSE,
-#'                                          show_graph = TRUE)
 
 retrieve_missing_data <- function(data,
                                   date_range = NULL,
@@ -75,11 +66,7 @@ retrieve_missing_data <- function(data,
 #' @import dplyr
 #' @import lubridate
 #'
-#' @examples
-#' traffic_without_nighttime <- retrieve_missing_hours(traffic)
-#' traffic_without_nighttime <- retrieve_missing_hours(traffic, threshold_uptime = 0.3)
-
-retrieve_missing_hours <- function(data, threshold_uptime = 0.5) {
+ieve_missing_hours <- function(data, threshold_uptime = 0.5) {
 
   # Convert date column to datetime format
   data$date <- ymd_hms(data$date)
@@ -127,15 +114,7 @@ retrieve_missing_hours <- function(data, threshold_uptime = 0.5) {
 #' @import lubridate
 #' @import ggplot2
 #'
-#' @examples
-#' traffic_without_inactivity <- replace_inactivity_period(traffic)
-#' traffic_without_inactivity <- replace_inactivity_period(traffic,
-#'                                                         threshold_uptime = 0.3,
-#'                                                         successive_day = 1,
-#'                                                         remove_data = FALSE,
-#'                                                         show_graph = TRUE)
-
-replace_inactivity_period <- function(data, successive_day = 2, threshold_uptime = 0.5, remove_data = TRUE, show_graph = TRUE) {
+e_inactivity_period <- function(data, successive_day = 2, threshold_uptime = 0.5, remove_data = TRUE, show_graph = TRUE) {
 
   # Convert date column to datetime format
   data$date <- ymd_hms(data$date)

@@ -14,14 +14,6 @@
 #'
 #' @keywords internal
 #' @export
-#' @examples
-#' @examples
-#' data <- validate_and_preprocess_data(data = traffic,
-#'                                      transport_type = "car",
-#'                                      sensors_id = 9000001844,
-#'                                      base_vars = c("day_of_month", "hour", "weekday",
-#'                                                   "month", year", "vacation",
-#'                                                   "week_number", "segment_id", "date"),
 
 validate_and_preprocess_data <-
   function(data,
@@ -160,20 +152,6 @@ validate_and_preprocess_data <-
 #' @keywords internal
 #' @export
 #'
-#' @examples
-#' data <- validate_and_preprocess_data(data = traffic,
-#'                                      transport_type = "car",
-#'                                      sensors_id = 9000001844,
-#'                                      base_vars = c("day_of_month", "hour", "weekday",
-#'                                                   "month","year", "vacation",
-#'                                                   "week_number", "segment_id","date"))
-#'
-#' data <- create_and_train_model(data = data,
-#'                                target = "car",
-#'                                base_vars = c("day_of_month", "hour", "weekday",
-#'                                             "month", year", "vacation",
-#'                                             "week_number", "segment_id", "date"),
-#'                                threshold_uptime = 0.5)
 
 
 create_and_train_model <-
@@ -256,15 +234,7 @@ create_and_train_model <-
 #'
 #' Time interval could be hourly or quarterly. The function will automatically detect the time interval based on the data and add a minute variable if it's quarterly.
 #'
-#' @export
-#' @examples \dontrun{
-#'  traffic_clean <- retrieve_missing_data(traffic,remove_data = TRUE,successive_day = 2)
-#'  traffic_imputed <- impute_missing_data(traffic,
-#'    sensors_id = 9000001844,
-#'    transport_type = "vehicle",
-#'    threshold_uptime = 0.5)
-#'  table(traffic_imputed$imputed)
-#'}
+
 
 impute_missing_data <-
   function(data,
@@ -364,12 +334,7 @@ impute_missing_data <-
 #' @import utils
 #'
 #' @export
-#' @examples \dontrun{
-#' fine_tune_impute_missing_data(data = traffic, target_col = "vehicle",
-#'                         mtry_range = c(2, 4, 6, 8),
-#'                         min_n_range = c(1, 5, 10, 20),
-#'                         threshold_uptime = 0.5)
-#' }
+
 
 fine_tune_impute_missing_data <- function(data, target_col="vehicle",sensors_id = NULL,
                                           mtry_range, min_n_range, num_trees = 500, add_vars = NULL,
