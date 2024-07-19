@@ -854,7 +854,7 @@ ieve_missing_hours <- function(data, threshold_uptime = 0.5) {
 #' @import lubridate
 #' @import ggplot2
 #'
-retrieve_inactivity_period <- function(data, successive_day = 2, threshold_uptime = 0.5, remove_data = TRUE, show_graph = TRUE) {
+replace_inactivity_period <- function(data, successive_day = 2, threshold_uptime = 0.5, remove_data = TRUE, show_graph = TRUE) {
 
   # Convert date column to datetime format
   data$date <- ymd_hms(data$date)
