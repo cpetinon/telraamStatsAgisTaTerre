@@ -16,16 +16,16 @@
 #' @export
 #'
 import_sensor <- function(list_sensor,
-                        sensor_names = c("Burel-01","Leclerc-02","ParisMarche-03","rueVignes-04","ParisArcEnCiel-05","RteVitre-06",
-                                         "RueGdDomaine-07","StDidierNord-08","rueVallee-09","StDidierSud-10","RuePrieure-11",
-                                         "RueCottage-12","RueVeronniere-13","RueDesEcoles-14","RueManoirs-15","RueToursCarree-16",
-                                         "PlaceHotelDeVille-17","BoulevardLiberte-18", "AvenueDesPlatanes-19", "BoulevardLeannec1-20", "BoulevardLeannec2-21", "RuePasteur-22", "RueRandonneurs-23"),
+                          sensor_names = c("Burel-01","Leclerc-02","ParisMarche-03","rueVignes-04","ParisArcEnCiel-05","RteVitre-06",
+                                           "RueGdDomaine-07","StDidierNord-08","rueVallee-09","StDidierSud-10","RuePrieure-11",
+                                           "RueCottage-12","RueVeronniere-13","RueDesEcoles-14","RueManoirs-15","RueToursCarree-16",
+                                           "PlaceHotelDeVille-17","BoulevardLiberte-18", "AvenueDesPlatanes-19", "BoulevardLeannec1-20", "BoulevardLeannec2-21", "RuePasteur-22", "RueRandonneurs-23"),
 
-                        sensor_ids = c(9000002156, 9000001906, 9000001618,9000003090,9000002453,9000001844,
-                                       9000001877,9000002666,9000002181,9000002707,9000003703,
-                                       9000003746,9000003775,9000003736,9000004971,9000004130,
-                                       9000004042,9000004697, 9000006227, 9000006552, 9000006207,9000004019, 9000006807)
-                        ){
+                          sensor_ids = c(9000002156, 9000001906, 9000001618,9000003090,9000002453,9000001844,
+                                         9000001877,9000002666,9000002181,9000002707,9000003703,
+                                         9000003746,9000003775,9000003736,9000004971,9000004130,
+                                         9000004042,9000004697, 9000006227, 9000006552, 9000006207,9000004019, 9000006807)
+){
 
   data <- data.frame()
   name_sensor <- sensor_names[sensor_ids%in%list_sensor]
@@ -35,9 +35,9 @@ import_sensor <- function(list_sensor,
       # we select the data that we don't consider null (arbitrary choice)
       import <- load(file)
       import <- get(import)
-      import <- import %>% filter(.data$uptime > 0.5,
-                                           .data$heavy_lft + .data$car_lft + .data$pedestrian_lft + .data$bike_lft +
-                                             .data$heavy_rgt + .data$car_rgt + .data$pedestrian_rgt + .data$bike_rgt >0)
+      # import <- import %>% filter(.data$uptime > 0.5 ,
+      #                                     .data$heavy_lft + .data$car_lft + .data$pedestrian_lft + .data$bike_lft +
+      #                                       .data$heavy_rgt + .data$car_rgt + .data$pedestrian_rgt + .data$bike_rgt >0)
       #import$car_speed_hist_0to70plus <-  convert_string_to_list(import$car_speed_hist_0to70plus)
       #import$car_speed_hist_0to120plus <- convert_string_to_list(import$car_speed_hist_0to120plus)
       import$date <- as.POSIXct(import$date)
