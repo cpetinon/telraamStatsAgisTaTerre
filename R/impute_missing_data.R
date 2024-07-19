@@ -14,122 +14,137 @@
 #'
 #' @keywords internal
 #' @export
+#' @examples
+#' @examples
+#' data <- validate_and_preprocess_data(data = traffic,
+#'                                      transport_type = "car",
+#'                                      sensors_id = 9000001844,
+#'                                      base_vars = c("day_of_month", "hour", "weekday",
+#'                                                   "month", year", "vacation",
+#'                                                   "week_number", "segment_id", "date"),
 
-validate_and_preprocess_data <-
-  function(data,
-           transport_type,
-           sensors_id,
-           base_vars,
-           add_vars = NULL,
-           threshold_uptime = 0.5) {
-    # Define constants
-    valid_transport_types <- c("car", "vehicle", "heavy", "all")
-    vehicle_vars <- c("car", "heavy")
+validate_and_preprocess_data <- function(data,
+                                         transport_type,
+                                         sensors_id,
+                                         base_vars,
+                                         add_vars = NULL,
+                                         threshold_uptime = 0.5) {
+  # Define constants
+  valid_transport_types <- c("car", "vehicle", "heavy", "all")
+  vehicle_vars <- c("car", "heavy")
 
   # Add missing additional variables to the model
-    if (!is.null(add_vars)) {
+  if (!is.null(add_vars)) {
 
-      if (!is.character(add_vars)) {stop("add_vars must be a character vector")}
-      if ((any(add_vars %in% base_vars))) {stop("add_vars must be different from base_vars : day_of_month,hour,weekday,month,year,vacation,week_number,segment_id ")}
-      if (!all(add_vars %in% colnames(data))) {stop("add_vars must be present in the data")}
+    if (!is.character(add_vars)) {stop("add_vars must be a character vector")}
+    if ((any(add_vars %in% base_vars))) {stop("add_vars must be different from base_vars : day_of_month,hour,weekday,month,year,vacation,week_number,segment_id ")}
+    if (!all(add_vars %in% colnames(data))) {stop("add_vars must be present in the data")}
 
-      base_vars <- c(base_vars, add_vars)
-    }
+    base_vars <- c(base_vars, add_vars)
+  }
 
-    # Add minute column if interval is "quarterly"
-    if (data$interval[1] == "quarterly") {
-      base_vars <- c(base_vars, "minute")
-      data <- data %>% mutate(minute = minute(.data$date))
+  # Add minute column if interval is "quarterly"
+  if (data$interval[1] == "quarterly") {
+    base_vars <- c(base_vars, "minute")
+    data <- data %>% mutate(minute = minute(.data$date))
 
-    }
+  }
 
-    # Validate input parameters
-    if (!transport_type %in% valid_transport_types) {
-      stop(sprintf(
-        "Unrecognized transport type. Valid options are: %s",
-        paste(valid_transport_types, collapse = ", ")
-      ))
-    }
+  # Validate input parameters
+  if (!transport_type %in% valid_transport_types) {
+    stop(sprintf(
+      "Unrecognized transport type. Valid options are: %s",
+      paste(valid_transport_types, collapse = ", ")
+    ))
+  }
 
-    # Check if date column is present
-    if (!"date" %in% colnames(data)) {
-      stop("The 'date' column is missing from the dataset.")
-    }
+  # Check if date column is present
+  if (!"date" %in% colnames(data)) {
+    stop("The 'date' column is missing from the dataset.")
+  }
 
-    # Add missing date-related columns using lubridate if they're not present
-    if (!"day_of_month" %in% colnames(data)) {
-      data <- data %>% mutate(day_of_month = day(.data$date))
-    }
-    if (!"hour" %in% colnames(data)) {
-      data <- data %>% mutate(hour = hour(.data$date))
-    }
-    if (!"month" %in% colnames(data)) {
-      data <- data %>% mutate(month = month(.data$date))
-    }
-    if (!"year" %in% colnames(data)) {
-      data <- data %>% mutate(year = year(.data$date))
-    }
-    if (!"week_number" %in% colnames(data)) {
-      data <- data %>% mutate(week_number = week(.data$date))
-    }
-    if (!"weekday" %in% colnames(data)) {
-      data <- data %>% mutate(weekday = wday(.data$date))
-    }
+  # Add missing date-related columns using lubridate if they're not present
+  if (!"day_of_month" %in% colnames(data)) {
+    data <- data %>% mutate(day_of_month = day(.data$date))
+  }
+  if (!"hour" %in% colnames(data)) {
+    data <- data %>% mutate(hour = hour(.data$date))
+  }
+  if (!"month" %in% colnames(data)) {
+    data <- data %>% mutate(month = month(.data$date))
+  }
+  if (!"year" %in% colnames(data)) {
+    data <- data %>% mutate(year = year(.data$date))
+  }
+  if (!"week_number" %in% colnames(data)) {
+    data <- data %>% mutate(week_number = week(.data$date))
+  }
+  if (!"weekday" %in% colnames(data)) {
+    data <- data %>% mutate(weekday = wday(.data$date))
+  }
 
-    # Define required variables for the model
-    required_vars <- c(base_vars, vehicle_vars)
+  # Define required variables for the model
+  required_vars <- c(base_vars, vehicle_vars)
 
-    # Check if all required variables are present in the dataset
-    missing_vars <- setdiff(required_vars, colnames(data))
-    if (length(missing_vars) > 0) {
-      stop(sprintf(
-        "Missing required variables: %s",
-        paste(missing_vars, collapse = ", ")
-      ))
-    }
+  # Check if all required variables are present in the dataset
+  missing_vars <- setdiff(required_vars, colnames(data))
+  if (length(missing_vars) > 0) {
+    stop(sprintf(
+      "Missing required variables: %s",
+      paste(missing_vars, collapse = ", ")
+    ))
+  }
 
-    # Filter data by segment name if specified
-    if (!is.null(sensors_id)) {
-      data <- data[data$segment_id %in% sensors_id,]
-    }
+  # Filter data by segment name if specified
+  if (!is.null(sensors_id)) {
+    data <- data[data$segment_id %in% sensors_id,]
+  }
 
-    # Convert data types to the correct format
+  # Convert data types to the correct format
+  data <- data %>%
+    mutate(
+      day_of_month = as.numeric(.data$day_of_month),
+      hour = as.numeric(.data$hour),
+      weekday = as.factor(.data$weekday),
+      month = as.factor(.data$month),
+      year = as.numeric(.data$year),
+      vacation = ifelse(
+        is.list(.data$vacation),
+        as.factor(unlist(.data$vacation)),
+        as.factor(.data$vacation)
+      ),
+      week_number = as.numeric(.data$week_number),
+      segment_id = if (is.factor(.data$segment_id))   {
+        factor(as.character(.data$segment_id),
+               levels = levels(.data$segment_id))
+      } else if (is.list(.data$segment_id)) {
+        factor(sapply(.data$segment_id, as.character), levels = unique(sapply(.data$segment_id, as.character)))
+      } else {
+        factor(as.character(.data$segment_id), levels = unique(as.character(.data$segment_id)))
+      }
+    )
+
+  # Calculate vehicle if not present
+  if (!"vehicle" %in% colnames(data) && transport_type %in% c("vehicle","all") ) {
     data <- data %>%
-      mutate(
-        day_of_month = as.numeric(.data$day_of_month),
-        hour = as.numeric(.data$hour),
-        weekday = as.factor(.data$weekday),
-        month = as.factor(.data$month),
-        year = as.numeric(.data$year),
-        vacation = ifelse(
-          is.list(.data$vacation),
-          as.factor(unlist(.data$vacation)),
-          as.factor(.data$vacation)
-        ),
-        week_number = as.numeric(.data$week_number),
-        segment_id = if (is.factor(.data$segment_id)) {
-          factor(as.character(.data$segment_id),
-                 levels = levels(.data$segment_id))
-        } else if (is.list(.data$segment_id)) {
-          factor(sapply(.data$segment_id, as.character), levels = unique(sapply(.data$segment_id, as.character)))
-        } else {
-          factor(as.character(.data$segment_id), levels = unique(as.character(.data$segment_id)))
-        }
-      )
+      mutate(vehicle = .data$car + .data$heavy)
+  }
 
-    # Calculate vehicle if not present
-    if (!"vehicle" %in% colnames(data) && transport_type %in% c("vehicle","all") ) {
-      data <- data %>%
-        mutate(vehicle = .data$car + .data$heavy)
-    }
-
-    # Prepare data for model training
+  # Prepare data for model training
+  if (transport_type != "all"){
     data <- data %>%
       mutate(y = ifelse(.data$uptime < threshold_uptime,
                         NA,!!sym(transport_type))) %>% select(-!!sym(transport_type))
-
-    return(data)
   }
+  else {
+    data <- data %>%
+      mutate(vehicle = ifelse(.data$uptime < threshold_uptime,NA,car + heavy),
+             car = ifelse(.data$uptime < threshold_uptime,NA,car),
+             heavy = ifelse(.data$uptime < threshold_uptime,NA,heavy))
+  }
+
+  return(data)
+}
 
 
 #' Create and train Random Forest model for traffic imputation
@@ -152,6 +167,20 @@ validate_and_preprocess_data <-
 #' @keywords internal
 #' @export
 #'
+#' @examples
+#' data <- validate_and_preprocess_data(data = traffic,
+#'                                      transport_type = "car",
+#'                                      sensors_id = 9000001844,
+#'                                      base_vars = c("day_of_month", "hour", "weekday",
+#'                                                   "month","year", "vacation",
+#'                                                   "week_number", "segment_id","date"))
+#'
+#' data <- create_and_train_model(data = data,
+#'                                target = "car",
+#'                                base_vars = c("day_of_month", "hour", "weekday",
+#'                                             "month", year", "vacation",
+#'                                             "week_number", "segment_id", "date"),
+#'                                threshold_uptime = 0.5)
 
 
 create_and_train_model <-
@@ -234,7 +263,15 @@ create_and_train_model <-
 #'
 #' Time interval could be hourly or quarterly. The function will automatically detect the time interval based on the data and add a minute variable if it's quarterly.
 #'
-
+#' @export
+#' @examples \dontrun{
+#'  traffic_clean <- retrieve_missing_data(traffic,remove_data = TRUE,successive_day = 2)
+#'  traffic_imputed <- impute_missing_data(traffic,
+#'    sensors_id = 9000001844,
+#'    transport_type = "vehicle",
+#'    threshold_uptime = 0.5)
+#'  table(traffic_imputed$imputed)
+#'}
 
 impute_missing_data <-
   function(data,
@@ -271,16 +308,21 @@ impute_missing_data <-
 
     # Impute data based on transport type
     if (transport_type == "all") {
-      # Impute 'vehicle' and 'car' separately
+      # Impute 'vehicle' and 'car' ,'heavy' separately
+      data_vehicle <- data %>% rename(y = .data$vehicle)
       data_vehicle <-
-        create_and_train_model(data, "vehicle", base_vars, threshold_uptime,
+        create_and_train_model(data_vehicle, "vehicle", base_vars, threshold_uptime,
                                min.node.size = min.node.size,mtry = mtry,num_trees = num_trees)
+      data_car <- data %>% rename(y = .data$car)
       data_car <-
-        create_and_train_model(data, "car", base_vars, threshold_uptime,
+        create_and_train_model(data_car, "car", base_vars, threshold_uptime,
                                min.node.size = min.node.size,mtry = mtry,num_trees = num_trees)
+
+      data_heavy <- data %>% rename(y = .data$heavy)
       data_heavy <-
-        create_and_train_model(data, "heavy", base_vars, threshold_uptime,
+        create_and_train_model(data_heavy, "heavy", base_vars, threshold_uptime,
                                min.node.size = min.node.size,mtry = mtry,num_trees = num_trees)
+
       # Calculate 'heavy' as max(0, vehicle - car)
       data_complete <- data_vehicle %>%
         select(.data$vehicle,
@@ -334,7 +376,12 @@ impute_missing_data <-
 #' @import utils
 #'
 #' @export
-
+#' @examples \dontrun{
+#' fine_tune_impute_missing_data(data = traffic, target_col = "vehicle",
+#'                         mtry_range = c(2, 4, 6, 8),
+#'                         min_n_range = c(1, 5, 10, 20),
+#'                         threshold_uptime = 0.5)
+#' }
 
 fine_tune_impute_missing_data <- function(data, target_col="vehicle",sensors_id = NULL,
                                           mtry_range, min_n_range, num_trees = 500, add_vars = NULL,
@@ -352,13 +399,13 @@ fine_tune_impute_missing_data <- function(data, target_col="vehicle",sensors_id 
     "date"
   )
 
-   # Validate and preprocess the input data
+  # Validate and preprocess the input data
   data <- validate_and_preprocess_data(data = data,
-                               transport_type = target_col,
-                               sensors_id= sensors_id,
-                               base_vars = base_vars,
-                               add_vars = add_vars,
-                               threshold_uptime =threshold_uptime)
+                                       transport_type = target_col,
+                                       sensors_id= sensors_id,
+                                       base_vars = base_vars,
+                                       add_vars = add_vars,
+                                       threshold_uptime =threshold_uptime)
 
   #remove date from base_vars
   base_vars <- base_vars[!base_vars %in% c("date")]
@@ -376,25 +423,36 @@ fine_tune_impute_missing_data <- function(data, target_col="vehicle",sensors_id 
 
   # Function to train and evaluate a single model
   evaluate_model <- function(mtry, min_n) {
-    model <- ranger(
-      formula = y ~ .,
-      data = data,
-      num.trees = num_trees,
-      mtry = mtry,
-      min.node.size = min_n,
-      importance = 'impurity',
-      oob.error = TRUE
-    )
-
-    return(tibble(mtry = mtry, min_n = min_n, "RMSE" = sqrt(model$prediction.error)))
+    tryCatch({
+      model <- ranger(
+        formula = y ~ .,
+        data = data,
+        num.trees = num_trees,
+        mtry = mtry,
+        min.node.size = min_n,
+        importance = 'impurity',
+        oob.error = TRUE
+      )
+      return(tibble(mtry = mtry, min_n = min_n, RMSE = sqrt(model$prediction.error)))
+    }, error = function(e) {
+      warning(paste("Error in model with mtry =", mtry, "and min_n =", min_n, ":", e$message))
+      return(NULL)
+    })
   }
 
   # Evaluate all combinations
   results <- purrr::map2_dfr(rf_grid$mtry, rf_grid$min_n, evaluate_model)
 
-  # Find best parameters
-  best_params <- results %>% slice_min("RMSE")
-
+  # Check if all RMSE values are the same
+  if (length(unique(results$RMSE)) == 1) {
+    warning("All RMSE values are identical. Returning the first set of parameters.")
+    best_params <- results[1, ]
+  } else {
+    # Find best parameters
+    best_params <- results %>%
+      arrange(RMSE) %>%
+      slice(1)
+  }
 
   return(list(best_params = best_params, all_results = results))
 }
