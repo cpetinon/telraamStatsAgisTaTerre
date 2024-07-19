@@ -806,7 +806,7 @@ retrieve_missing_data <- function(data,
 #' @import dplyr
 #' @import lubridate
 #'
-ieve_missing_hours <- function(data, threshold_uptime = 0.5) {
+retrieve_missing_hours <- function(data, threshold_uptime = 0.5) {
 
   # Convert date column to datetime format
   data$date <- ymd_hms(data$date)
