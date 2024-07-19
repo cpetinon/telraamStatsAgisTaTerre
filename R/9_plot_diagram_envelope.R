@@ -378,7 +378,7 @@ create_necessary_column <- function (enriched_data,direction_choice=NULL)
   if("speed_hist_car_lft" %in% colnames(enriched_data))
   {enriched_data<-restore_v85(enriched_data)}
 
-  enriched_data<-retrieve_missing_data(enriched_data)
+  enriched_data<-retrieve_missing_data(enriched_data,show=FALSE)
 
   enriched_data<-calculate_axes(enriched_data,direction_choice)
 
@@ -738,178 +738,187 @@ restore_v85<-function(enriched_data,direction_choice)
 }
 
 
-
-
-#' @description
-#' A short description...
-#' Retrieve hours with no data and replace incomplete data with NA,
+#' Clean data from inactivity periods and missing hours
 #'
+#' This function cleans the data by removing nighttime hours and periods of inactivity.
+#' It combines the functionalities of `retrieve_missing_hours` and `replace_inactivity_period`.
 #'
-#' @param enriched_data enriched data.frame containing all the data for all your sensors
-#' @param date_range Date vector. example: c('2021-01-01','2022-01-01'). Full period if NULL (default).
-#' @param segments Character vector. Selected road segment, all if NULL (default).
-#' @param successive_day Integer. Number of day choosen. Default to 2
-#' @param uptime_choice Real. Uptime choosen. Default to 0.5
-#'
-#' @return enriched_data
+#' @param data data.frame containing all the data for all your sensors
+#' @param date_range Date vector. Example: c('2021-01-01','2022-01-01'). Full period if NULL (default).
+#' @param segment_id Character vector. Selected road segment, all if NULL (default).
+#' @param threshold_uptime Numeric. Uptime threshold chosen. Default is 0.5.
+#' @param successive_day Integer. Number of days chosen to define an inactivity period. Default is 2.
+#' @param remove_data Logical. If TRUE, completely removes inactivity periods. If FALSE, replaces data with NA.
+#' @param show_graph Logical. If TRUE, displays a graph of inactivity periods. Default is TRUE.
+#' @return Cleaned data
 #' @export
 #'
 #' @import dplyr
 #' @import lubridate
 #'
-#' @examples
-#' retrieve_missing_data(traffic)
-#' retrieve_missing_data(traffic,
-#'  date_range = c('2022-07-01','2022-09-01'),
-#'  segment = 'RteVitre-06',
-#'  uptime_choice=0.3,
-#'  successive_day=1)
 
-retrieve_missing_data<- function(enriched_data,
-                                 date_range = NULL,
-                                 segments = NULL,
-                                 uptime_choice=0.5,
-                                 successive_day=2,
-                                 retrieve_data=TRUE)
-{
+retrieve_missing_data <- function(data,
+                                  date_range = NULL,
+                                  segment_id = NULL,
+                                  threshold_uptime = 0.5,
+                                  successive_day = 2,
+                                  remove_data = TRUE,
+                                  show_graph = TRUE) {
 
-  if(!is.null(segments))
-  {enriched_data<-enriched_data[enriched_data$segment_id==segments,]}
+  # Convert date column to datetime format
+  data$date <- ymd_hms(data$date)
 
-  if(!is.null(date_range))
-  {enriched_data<-enriched_data[enriched_data$day>=date_range[1] & enriched_data$day<= date_range[2],]}
-
-  if(length(enriched_data$car)==0){stop("No data in the selectionned period")}
-
-  else
-  {
-    #Hours with no data
-    enriched_data<-retrieve_missing_hours(enriched_data,uptime_choice)
-
-    #Inactivity Period
-    enriched_data<-replace_inactivity_period(enriched_data,successive_day,uptime_choice,retrieve_data)
-
+  # Filter data by segment_id if provided
+  if (!is.null(segment_id)) {
+    data <- data[data$segment_id %in% segment_id,]
   }
-  return(enriched_data)
+
+  # Filter data by date range if provided
+  if (!is.null(date_range)) {
+    data <- data[data$day >= date_range[1] & data$day <= date_range[2],]
+  }
+
+  # Check if there's data after filtering
+  if (nrow(data) == 0) {
+    stop("No data in the selected period")
+  } else {
+    # Remove inactivity periods
+    data_without_inactivity_period <- replace_inactivity_period(data, successive_day, threshold_uptime, remove_data, show_graph)
+
+    # Remove hours with no data
+    data_clean <- retrieve_missing_hours(data_without_inactivity_period, threshold_uptime)
+  }
+
+  return(data_clean)
 }
 
-#' @description
-#' A short description...
-#' Retrieve hours with no data
+#' Remove nighttime hours from traffic data
 #'
+#' This function removes nighttime hours when sensors cannot capture information.
+#' It filters the data to retain only the hours with reliable uptime.
 #'
-#' @param enriched_data enriched data.frame containing all the data for all your sensors
-#' @param uptime_choice Real. Uptime choosen. Default to 0.5
+#' @param data data.frame containing all the data for all your sensors
+#' @param threshold_uptime Numeric. Uptime threshold chosen. Default is 0.5.
 #'
-#' @return enriched_data
+#' @return data without nighttime hours
 #' @export
 #'
 #' @import dplyr
 #' @import lubridate
 #'
-#' @examples
-#' retrieve_missing_hours(traffic)
-#' retrieve_missing_hours(traffic,
-#'  uptime_choice=0.3)
+ieve_missing_hours <- function(data, threshold_uptime = 0.5) {
 
-retrieve_missing_hours<-function(enriched_data,
-                                 uptime_choice=0.5)
-{
-  enriched_data$date <- ymd_hms(enriched_data$date)
-  enriched_data$season <- ifelse(month(enriched_data$date) %in% c(3,4,5), "Spring",
-                                 ifelse(month(enriched_data$date) %in% c(6,7,8), "Summer",
-                                        ifelse(month(enriched_data$date) %in% c(9,10,11), "Autumn", "Winter")))
+  # Convert date column to datetime format
+  data$date <- ymd_hms(data$date)
 
-  df_season<-enriched_data %>% group_by(segment_id,season,hour) %>% summarise(condition=any(car!=0 & uptime>uptime_choice), .groups = "keep")
+  # Determine season based on date
+  data <- data %>%
+    mutate(season = case_when(
+      (month(.data$date) == 3 & day(.data$date) >= 20) | (month(.data$date) == 6 & day(.data$date) < 21) | (month(.data$date) %in% 4:5) ~ "Spring",
+      (month(.data$date) == 6 & day(.data$date) >= 21) | (month(.data$date) == 9 & day(.data$date) < 23) | (month(.data$date) %in% 7:8) ~ "Summer",
+      (month(.data$date) == 9 & day(.data$date) >= 23) | (month(.data$date) == 12 & day(.data$date) < 21) | (month(.data$date) %in% 10:11) ~ "Autumn",
+      TRUE ~ "Winter"
+    ))
 
-  enriched_data <- enriched_data %>% semi_join(df_season %>% filter(condition), by = c("segment_id","season", "hour"))
+  # Calculate condition for each segment, season, and hour
+  df_season <- data %>%
+    group_by(.data$segment_id, .data$season, .data$hour) %>%
+    summarise(
+      condition = mean(.data$car == 0 & .data$uptime <= threshold_uptime) <= 0.05,
+      .groups = 'drop'
+    )
 
-  return(enriched_data)
+  # Filter data based on the calculated condition
+  data <- data %>%
+    semi_join(df_season %>% filter(.data$condition), by = c("segment_id", "season", "hour"))
+
+  return(data)
 }
 
-#' @description
-#' A short description...
-#' Replace incomplete data with NA,
+#' Replace or remove inactivity periods in traffic data
 #'
+#' This function identifies periods of sensor inactivity and either replaces them with NA or removes them.
+#' An inactivity period is defined as a consecutive period where the uptime is below the chosen threshold
+#' or if no vehicles are counted during this period.
 #'
-#' @param enriched_data enriched data.frame containing all the data for all your sensors
-#' @param successive_day Integer. Number of day choosen. Default to 2
-#' @param uptime_choice Real. Uptime choosen. Default to 0.5
-#' @param retrieve_data Boolean. Choice to replace data or not. Default to TRUE
+#' @param data data.frame containing all the data for all your sensors
+#' @param successive_day Integer. Number of consecutive days to define an inactivity period. Default is 2.
+#' @param threshold_uptime Numeric. Uptime threshold chosen. Default is 0.5.
+#' @param remove_data Logical. If TRUE, removes inactivity periods. If FALSE, replaces data with NA.
+#' @param show_graph Logical. If TRUE, displays a graph of inactivity periods. Default is TRUE.
 #'
-#' @return enriched_data
+#' @return data with inactivity periods replaced or removed
 #' @export
 #'
 #' @import dplyr
 #' @import lubridate
+#' @import ggplot2
 #'
-#' @examples
-#' replace_inactivity_period(traffic)
-#' replace_inactivity_period(traffic,
-#'  uptime_choice=0.3,
-#'  successive_day=1,
-#'  retrieve_data=FALSE)
+e_inactivity_period <- function(data, successive_day = 2, threshold_uptime = 0.5, remove_data = TRUE, show_graph = TRUE) {
 
-replace_inactivity_period<-function (enriched_data,
-                                     successive_day=2,
-                                     uptime_choice=0.5,
-                                     retrieve_data=TRUE)
-{
-  if(retrieve_data==FALSE)
-  {
-    enriched_data <- enriched_data %>%
+  # Convert date column to datetime format
+  data$date <- ymd_hms(data$date)
+
+  # Function to identify inactive periods
+  identify_inactive_periods <- function(df) {
+    df <- df %>%
       mutate(
-        heavy_NA = heavy,
-        car_NA = car,
-        bike_NA = bike,
-        pedestrian_NA = pedestrian
-      )
+        is_inactive = (.data$uptime < threshold_uptime) | (.data$car == 0 & .data$uptime >= threshold_uptime),
+        inactive_group = cumsum(c(0, diff(as.numeric(.data$is_inactive)) != 0))
+      ) %>%
+      group_by(.data$inactive_group) %>%
+      mutate(
+        period_start = first(.data$date),
+        period_end = last(.data$date),
+        period_length = as.numeric(difftime(.data$period_end, .data$period_start, units = "days"))
+      ) %>%
+      ungroup()
+
+    return(df)
   }
 
+  # Process the data
+  processed_data <- data %>%
+    group_by(.data$segment_id) %>%
+    group_modify(~identify_inactive_periods(.x)) %>%
+    ungroup() %>%
+    mutate(should_remove = .data$is_inactive & .data$period_length >= successive_day)
 
-  list_clear_data <- list()
-  seg_id<-unique(enriched_data$segment_id)
+  # Columns to process
+  columns_to_process <- c("heavy", "car", "bike", "pedestrian",
+                          "heavy_lft", "heavy_rgt", "car_lft", "car_rgt",
+                          "bike_lft", "bike_rgt", "pedestrian_lft", "pedestrian_rgt")
 
-  for(id in 1:length(seg_id))
-  {
-    df_segment<-enriched_data[enriched_data$segment_id==seg_id[id],]
-    for(i in 1:length(df_segment$car))
-    {
-      j=i
+  # Apply removal or replacement with NA
+  if (remove_data) {
+    result <- processed_data %>%
+      filter(!.data$should_remove) %>%
+      select(-"is_inactive", -"inactive_group", -"period_start", -"period_end", -"period_length", -"should_remove")
+  } else {
+    result <- processed_data %>%
+      mutate(across(all_of(columns_to_process),
+                    ~if_else(.data$should_remove, NA_real_, .))) %>%
+      select(-"is_inactive", -"inactive_group", -"period_start", -"period_end", -"period_length", -"should_remove")
 
-      while ((df_segment$car[i]==0 | df_segment$uptime[i]<uptime_choice | is.na(df_segment$car[i]) )& i<length(df_segment$car))
-      {i<-i+1}
-
-      diff_days<-abs(as.numeric(difftime(df_segment$day[i], df_segment$day[j], units = "days")))
-
-      if(diff_days>successive_day)
-      {
-        if(retrieve_data==TRUE)
-        {
-          df_segment <- df_segment %>%
-            mutate_at(vars(heavy, car, bike,pedestrian,heavy_lft,heavy_rgt,car_lft,
-                           car_rgt,bike_lft,bike_rgt,pedestrian_lft,pedestrian_rgt),
-                      ~ ifelse(row_number() %in% min(i,j):max(i,j), NA,.))
-        }
-        else
-        {
-
-          df_segment <- df_segment %>%
-            mutate_at(vars(heavy_NA, car_NA, bike_NA,pedestrian_NA),
-                      ~ ifelse(row_number() %in% min(i,j):max(i,j), NA,.))
-        }
-
-      }
-    }
-    list_clear_data[[id]]<-df_segment
-  }
-  enriched_data<-list_clear_data[[1]]
-
-  if(length(seg_id)>1)
-  {
-    for(i in 2:length(seg_id))
-    {enriched_data<-rbind(enriched_data,list_clear_data[[i]])}
   }
 
-  return(enriched_data)
+  # Display graph if show_graph is TRUE
+  if (show_graph) {
+    graph_data <- processed_data %>%
+      filter(.data$should_remove) %>%
+      select(.data$segment_fullname, .data$period_start, .data$period_end, .data$period_length) %>%
+      mutate(segment_fullname = as.factor(.data$segment_fullname))
+
+    p <- ggplot(graph_data, aes(x = .data$period_start, xend = .data$period_end, y = .data$segment_fullname, yend = .data$segment_fullname)) +
+      geom_segment(color = "red", size = 2) +
+      labs(title = "Inactivity periods to be removed",
+           x = "Date",
+           y = "Segment")
+
+    # Display the graph
+    print(p)
+  }
+
+  return(result)
 }
+
