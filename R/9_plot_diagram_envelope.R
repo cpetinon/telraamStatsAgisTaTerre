@@ -695,6 +695,7 @@ restore_v85 <- function(enriched_data, direction_choice) {
 #' @param remove_data Logical. If TRUE, completely removes inactivity periods. If FALSE, replaces data with NA.
 #' @param show_graph Logical. If TRUE, displays a graph of inactivity periods. Default is TRUE.
 #' @return Cleaned data
+#'
 #' @export
 #'
 #' @import dplyr
