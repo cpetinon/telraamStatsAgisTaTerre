@@ -173,26 +173,26 @@ calculate_data_dimensionless<- function (enriched_data,
 #'   NumberOfSlope=60,
 #'   NumberOfOrdinate=65)
 
-calculate_interpolation_line<-function (ordinate_line,
-                                        mat_inter,
-                                        NumberOfSlope=50,
-                                        NumberOfOrdinate=45)
-{
-  alpha<-rep(0,NumberOfSlope)
+calculate_interpolation_line <- function(ordinate_line,
+                                         mat_inter,
+                                         NumberOfSlope = 50,
+                                         NumberOfOrdinate = 45) {
 
-  for (i in 1:NumberOfSlope)
-  {
-    if(mat_inter[i,NumberOfOrdinate+1] > 1)
-    {
-      xout <- seq(ordinate_line[mat_inter[i,NumberOfOrdinate+1]-1],
-                  ordinate_line[mat_inter[i,NumberOfOrdinate+1]],
-                  by = ordinate_line[mat_inter[i,NumberOfOrdinate+1]]-ordinate_line[mat_inter[i,NumberOfOrdinate+1]-1])
-      interpolated <- approx(ordinate_line,mat_inter[i,1:NumberOfOrdinate], xout = xout,method = 'linear')
+  alpha <- numeric(NumberOfSlope)
+
+  alpha <- sapply(1:NumberOfSlope, function(i) {
+    if (mat_inter[i, NumberOfOrdinate + 1] > 1) {
+      xout <- seq(ordinate_line[mat_inter[i, NumberOfOrdinate + 1] - 1],
+                  ordinate_line[mat_inter[i, NumberOfOrdinate + 1]],
+                  by = ordinate_line[mat_inter[i, NumberOfOrdinate + 1]] - ordinate_line[mat_inter[i, NumberOfOrdinate + 1] - 1])
+      interpolated <- approx(ordinate_line, mat_inter[i, 1:NumberOfOrdinate], xout = xout, method = 'linear')
       x_interp <- interpolated$x
       y_interp <- interpolated$y
-      alpha[i]<- (y_interp[2]-y_interp[1])/(x_interp[2]-x_interp[1])
+      return((y_interp[2] - y_interp[1]) / (x_interp[2] - x_interp[1]))
+    } else {
+      return(0)
     }
-  }
+  })
 
   return(alpha)
 }
@@ -294,68 +294,51 @@ calculate_necessary_data <- function (enriched_data,
 #'   NumberofOrdinate=45,
 #'   percent=95)
 
+count_point <- function(enriched_data,
+                        slope_line,
+                        ordinate_line,
+                        direction_choice = NULL,
+                        NumberOfSlope = 50,
+                        NumberOfOrdinate = 45,
+                        percent) {
 
-count_point<-function(enriched_data,
-                      slope_line,
-                      ordinate_line,
-                      direction_choice=NULL,
-                      NumberOfSlope=50,
-                      NumberOfordiante=45,
-                      percent)
-
-{
-  if(is.null(direction_choice) || !("speed_hist_car_lft" %in% colnames(enriched_data)) )
-  {
-    abcissa_point<-enriched_data$veh_km_adim
-    ordinate_point<-enriched_data$km_h_adim
+  if (is.null(direction_choice) || !("speed_hist_car_lft" %in% colnames(enriched_data))) {
+    abscissa_point <- enriched_data$veh_km_adim
+    ordinate_point <- enriched_data$km_h_adim
+  } else if (direction_choice == 'lft') {
+    abscissa_point <- enriched_data$veh_km_lft_adim
+    ordinate_point <- enriched_data$km_h_lft_adim
+  } else {
+    abscissa_point <- enriched_data$veh_km_rgt_adim
+    ordinate_point <- enriched_data$km_h_rgt_adim
   }
 
-  else if (direction_choice=='lft')
-  {
-    abcissa_point<-enriched_data$veh_km_lft_adim
-    ordinate_point<-enriched_data$km_h_lft_adim
-  }
+  mat_inter <- matrix(0, nrow = NumberOfSlope, ncol = NumberOfOrdinate + 1)
 
-  else
-  {
-    abcissa_point<-enriched_data$veh_km_rgt_adim
-    ordinate_point<-enriched_data$km_h_rgt_adim
-  }
+  for (a in 1:NumberOfSlope) {
+    test_slope <- slope_line[a]
 
+    for (b in 1:NumberOfOrdinate) {
+      test_ordinate <- ordinate_line[b]
 
-  mat_inter<-matrix(0,nrow=NumberOfSlope,ncol=NumberOfordiante+1)
+      # Calcul vectorisé de NumberOfPoint
+      test_equation <- test_slope * abscissa_point + test_ordinate
+      NumberOfPoint <- sum(ordinate_point < test_equation, na.rm = TRUE)
 
-  for(a in 1:NumberOfSlope)
-  {
-    test_slope<-slope_line[a]
+      mat_inter[a, b] <- 100 * NumberOfPoint / sum(!is.na(abscissa_point))
 
-    for(b in 1:NumberOfordiante)
-    {
-      test_ordinate<-ordinate_line[b]
-      length_vector<-0
-
-      NumberOfPoint<-0
-      for(i in 1:length(abcissa_point))
-      {
-        if(!is.na(abcissa_point[i]))
-        {
-          length_vector<-length_vector+1
-          test_equation<-test_slope*abcissa_point[i]+test_ordinate
-          if(ordinate_point[i]<test_equation){NumberOfPoint<-NumberOfPoint+1}
-        }
-
+      if (mat_inter[a, b] >= percent && mat_inter[a, NumberOfOrdinate + 1] == 0) {
+        mat_inter[a, NumberOfOrdinate + 1] = b
       }
-      mat_inter[a,b]<-100*NumberOfPoint/length_vector
-      if( mat_inter[a,b]>=percent & mat_inter[a,NumberOfordiante+1]==0)
-      {mat_inter[a,NumberOfordiante+1]=b}
     }
-    if(mat_inter[a,NumberOfordiante+1]==0)
-    {mat_inter[a,NumberOfordiante+1]=1}
+
+    if (mat_inter[a, NumberOfOrdinate + 1] == 0) {
+      mat_inter[a, NumberOfOrdinate + 1] = 1
+    }
   }
 
   return(mat_inter)
 }
-
 
 #' @description
 #' A short description...
@@ -678,65 +661,26 @@ plot_lines <- function (enriched_data,
 #' @examples
 #' restore_v85(enriched_data)
 
+restore_v85 <- function(enriched_data, direction_choice) {
+  speed <- seq(5, 125, by = 5)
 
-restore_v85<-function(enriched_data,direction_choice)
-{
-
-  speed<-seq(5,125,by=5)
-
-
-  #Left
-  if(direction_choice=='lft')
-  {
-    enriched_data$v85_lft<-0
-    for (i in 1:length(enriched_data$car))
-    {
-      vec<-enriched_data$speed_hist_car_lft[i]
-      elements <- strsplit(vec, ",")[[1]]
-      elements[1]<- gsub("\\[", "", elements[1])
-      elements[25]<- gsub("\\]", "", elements[25])
-      vector <- as.numeric(elements)
-      per_vec <- sum(vector)
-      per_85 <- 0.85*per_vec
-      j<-1
-      sum<-0
-
-      while (sum<per_85 & j<length(vector))
-      {
-        sum<-sum+vector[j]
-        j<-j+1
-      }
-      enriched_data$v85_lft[i]<-speed[j]
-    }
+  process_direction <- function(speed_hist_col) {
+    sapply(speed_hist_col, function(vec) {
+      elements <- as.numeric(gsub("\\[|\\]", "", strsplit(vec, ",")[[1]]))
+      cum_sum <- cumsum(elements)
+      per_85 <- 0.85 * sum(elements)
+      speed[which.max(cum_sum >= per_85)]
+    })
   }
 
-  #Rigth
-  else
-  {
-    enriched_data$v85_rgt<-0
-    for (i in 1:length(enriched_data$car))
-    {
-      vec<-enriched_data$speed_hist_car_rgt[i]
-      elements <- strsplit(vec, ",")[[1]]
-      elements[1]<- gsub("\\[", "", elements[1])
-      elements[25]<- gsub("\\]", "", elements[25])
-      vector <- as.numeric(elements)
-      per_vec <- sum(vector)
-      per_85 <- 0.85*per_vec
-      j<-1
-      sum<-0
-
-      while (sum<per_85 & j<length(vector))
-      {
-        sum<-sum+vector[j]
-        j<-j+1
-      }
-      enriched_data$v85_rgt[i]<-speed[j]
-    }
+  if (direction_choice == 'lft') {
+    enriched_data$v85_lft <- process_direction(enriched_data$speed_hist_car_lft)
+  } else {
+    enriched_data$v85_rgt <- process_direction(enriched_data$speed_hist_car_rgt)
   }
+
   return(enriched_data)
 }
-
 
 #' Clean data from inactivity periods and missing hours
 #'
@@ -806,7 +750,7 @@ retrieve_missing_data <- function(data,
 #' @import dplyr
 #' @import lubridate
 #'
-ieve_missing_hours <- function(data, threshold_uptime = 0.5) {
+retrieve_missing_hours <- function(data, threshold_uptime = 0.5) {
 
   # Convert date column to datetime format
   data$date <- ymd_hms(data$date)
@@ -854,7 +798,7 @@ ieve_missing_hours <- function(data, threshold_uptime = 0.5) {
 #' @import lubridate
 #' @import ggplot2
 #'
-e_inactivity_period <- function(data, successive_day = 2, threshold_uptime = 0.5, remove_data = TRUE, show_graph = TRUE) {
+replace_inactivity_period <- function(data, successive_day = 2, threshold_uptime = 0.5, remove_data = TRUE, show_graph = TRUE) {
 
   # Convert date column to datetime format
   data$date <- ymd_hms(data$date)
